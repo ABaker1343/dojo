@@ -1,22 +1,17 @@
-C=g++
+CC=g++
 FLAGS=-Wall -lGL
 
 SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp)
-OBJ=$(pathsubst %.cpp, %.o, $(SOURCE)) glad.o
+#OBJ=$(pathsubst %.cpp, %.o, $(SOURCE)) glad.o
+OBJ=$(SOURCE:.cpp=.o) glad.o
 
-libdojo.so : $(OBJ)
+libdojo.so: $(OBJ)
 	$(CC) --shared -o $@ $^ $(FLAGS)
 
-%.o : %.cpp %.hpp
+%.o: %.cpp
 	$(CC) -fPIC -c -o $@ $< $(FLAGS)
 
-window/%.o : window/%.cpp window/headers/%.hpp
-	$(CC) -fPIC -c -o $@ $< $(FLAGS)
-
-gameObjects%.o : gameObjects/%.cpp gameObjects/headers/%.hpp
-	$(CC) -fPIC -c -o $@ $< $(FLAGS)
-
-glad.o : glad.c
+glad.o: glad.c
 	$(CC) -fPIC -c -o $@ $< $(FLAGS)
 
 clean:
