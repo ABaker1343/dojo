@@ -55,6 +55,14 @@ void Window::windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int
     }
 }
 
+void Window::flipBuffers() {
+    glfwSwapBuffers(m_Window);
+}
+
+void Window::pollEvents() {
+    glfwPollEvents();
+}
+
 void Window::windowResizeCallback(GLFWwindow* _window, int _width, int _height) {
 
 }

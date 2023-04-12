@@ -12,6 +12,9 @@ class Window {
         Window(int _width, int _height, std::string& _title);
         ~Window();
 
+        void flipBuffers();
+        void pollEvents();
+
         static bool KEYS[GLFW_KEY_LAST + 1];
 
     private:

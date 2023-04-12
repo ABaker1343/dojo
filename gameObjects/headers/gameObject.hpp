@@ -9,8 +9,8 @@ class GameObject {
         GameObject(glm::vec3 _pos, glm::vec3 _scale);
         ~GameObject();
 
-        void setPos();
-        void scale();
+        void setPos(glm::vec3 _pos);
+        void setScale(glm::vec3 _scale);
 
     protected:
         glm::vec3 m_WorldPos;

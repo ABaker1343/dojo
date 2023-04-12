@@ -8,6 +8,7 @@
 
 #include "window.hpp"
 #include "../../gameObjects/headers/renderable.hpp"
+#include "../../headers/fileHandler.hpp"
 
 namespace dojo{
 
@@ -17,13 +18,15 @@ class Renderer {
         ~Renderer();
 
         void draw(Renderable& _object);
-        void setShader(std::string& _shader);
+        void setShader(const std::string& _shader);
 
     private:
 
-        GLFWwindow* m_Window;
+        Window* m_Window;
 
         std::map<std::string, unsigned int> m_Shaders;
+
+        void loadShaders();
         
 
 };
