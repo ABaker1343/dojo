@@ -2,7 +2,7 @@
 
 namespace dojo {
     
-    GameObject2D::GameObject2D(std::string& _texturePath) : GameObject() {
+    GameObject2D::GameObject2D(const std::string& _texturePath) : GameObject() {
         setTexture(_texturePath);
 
         vertexData = new std::vector<float> {
@@ -15,9 +15,11 @@ namespace dojo {
         };
 
         m_VertexBufferSize = vertexData->size();
+
+        createBuffers();
     }
 
-    void GameObject2D::setTexture(std::string& _texturePath) {
+    void GameObject2D::setTexture(const std::string& _texturePath) {
         // set the texture of the object for rendering
     }
 

@@ -3,16 +3,21 @@
 
 namespace dojo {
 
-Renderer::Renderer(Window& _window, int _VPWidth, int _VPHeight) {
+Renderer::Renderer(Window* _window, glm::vec2 _VPSize) {
 
-    m_Window = &_window;
+    m_Window = _window;
 
     // glfw window hints
 
-    glViewport(0, 0, _VPWidth, _VPHeight);
-    loadShaders();
-    setShader("default");
+    glViewport(0, 0, _VPSize.x, _VPSize.y);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    setShaderPath("shaders/");
     
+}
+
+Renderer::Renderer(Window* _window) {
+    glm::vec2 windowSize = _window->getDimensions();
+    Renderer(_window, windowSize);
 }
 
 Renderer::~Renderer() {
@@ -23,14 +28,24 @@ Renderer::~Renderer() {
     }
 }
 
+void Renderer::clear() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 void Renderer::draw(Renderable& _object) {
     glBindVertexArray(_object.getVertexArray());
-    glDrawArrays(GL_TRIANGLES, 0, _object.getVertexBufferSize());
+    std::cout << _object.getVertexArray() << std::endl;
+    glDrawArrays(GL_TRIANGLES, 0, _object.getVertexBufferSize() / 3);
 }
 
 void Renderer::setShader(const std::string& _shader) {
     unsigned int newShader = m_Shaders[_shader];
     glUseProgram(newShader);
+}
+
+void Renderer::setShaderPath(const std::string& _shaderPath) {
+    m_ShaderPath = _shaderPath;
+    std::cout << "eeee" << _shaderPath << " " << m_ShaderPath << std::endl;
 }
 
 void Renderer::loadShaders() {
@@ -39,8 +54,8 @@ void Renderer::loadShaders() {
 
     for (const std::string& shader : shaderNames) {
         // load the shader
-        std::string vertSource = FileHandler::loadShaderCode(shader + ".vert");
-        std::string fragSource = FileHandler::loadShaderCode(shader + ".frag");
+        std::string vertSource = FileHandler::loadShaderCode("../shaders/" + shader + ".vert");
+        std::string fragSource = FileHandler::loadShaderCode(m_ShaderPath + shader + ".frag");
 
         unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
         unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -57,7 +72,7 @@ void Renderer::loadShaders() {
         glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(vertexShader, 512, NULL, info);
-            std::cout << "info" << std::endl;
+            std::cout << info << std::endl;
             throw std::runtime_error("failed to compile vertex shader: " + shader);
         }
 
@@ -65,7 +80,7 @@ void Renderer::loadShaders() {
         glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(fragmentShader, 512, NULL, info);
-            std::cout << "info" << std::endl;
+            std::cout << info << std::endl;
             throw std::runtime_error("failed to compile fragment shader: " + shader);
         }
 
@@ -77,7 +92,7 @@ void Renderer::loadShaders() {
         glGetProgramiv(program, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(program, 512, NULL, info);
-            std::cout << "info" << std::endl;
+            std::cout << info << std::endl;
             throw std::runtime_error("failed to link shader program: " + shader);
         }
 
@@ -86,6 +101,8 @@ void Renderer::loadShaders() {
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
     }
+
+    setShader("default");
 }
 
 }

@@ -1,3 +1,6 @@
+#ifndef __HEADER_GAME_OBJECT_2D
+#define __HEADER_GAME_OBJECT_2D
+
 #include "gameObject.hpp"
 #include "renderable.hpp"
 
@@ -6,12 +9,12 @@
 
 namespace dojo {
 
-class GameObject2D : GameObject, Renderable {
+class GameObject2D : public GameObject, public Renderable {
     public:
-        GameObject2D(std::string& _texturePath);
+        GameObject2D(const std::string& _texturePath);
         ~GameObject2D();
 
-        void setTexture(std::string& _texturePath);
+        void setTexture(const std::string& _texturePath);
 
     protected:
         unsigned int m_Texture;
@@ -23,3 +26,5 @@ class GameObject2D : GameObject, Renderable {
 };
 
 }
+
+#endif

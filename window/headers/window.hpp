@@ -1,3 +1,6 @@
+#ifndef __HEADER_WINDOW
+#define __HEADER_WINDOW
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -9,11 +12,13 @@ namespace dojo {
 
 class Window {
     public:
-        Window(int _width, int _height, std::string& _title);
+        Window(int _width, int _height, const std::string& _title);
         ~Window();
 
         void flipBuffers();
         void pollEvents();
+
+        glm::vec2 getDimensions();
 
         static bool KEYS[GLFW_KEY_LAST + 1];
 
@@ -23,9 +28,12 @@ class Window {
         static void windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods);
         static void windowResizeCallback(GLFWwindow* _window, int _width, int _height);
 
-        void initWindow(int _width, int _height, std::string& _title);
+        void initWindow(int _width, int _height, const std::string& _title);
         void setWindowCallbacks();
         
 };
 
 }
+
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef __HEADER_RENDERABLE
+#define __HEADER_RENDERABLE
+
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
@@ -22,3 +25,5 @@ class Renderable {
 };
 
 }
+
+#endif

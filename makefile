@@ -1,5 +1,5 @@
 CC=g++
-FLAGS=-Wall -lGL
+FLAGS=-Wall -lGL -lglfw
 
 SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp)
 #OBJ=$(pathsubst %.cpp, %.o, $(SOURCE)) glad.o

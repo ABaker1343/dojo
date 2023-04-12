@@ -23,7 +23,7 @@ unsigned int Renderable::getVertexBufferSize() {
 }
 
 unsigned int Renderable::getVertexArray() {
-    return m_VertexBuffer;
+    return m_VertexArrayObject;
 }
 
 }

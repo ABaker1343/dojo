@@ -4,7 +4,7 @@ namespace dojo {
 
 bool Window::KEYS[GLFW_KEY_LAST + 1];
 
-Window::Window(int _width, int _height, std::string& _title){
+Window::Window(int _width, int _height, const std::string& _title){
 
     initWindow(_width, _height, _title);
 
@@ -18,7 +18,10 @@ Window::Window(int _width, int _height, std::string& _title){
 
 }
 
-void Window::initWindow(int _width, int _height, std::string& _title) {
+void Window::initWindow(int _width, int _height, const std::string& _title) {
+
+    glfwInit();
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -61,6 +64,12 @@ void Window::flipBuffers() {
 
 void Window::pollEvents() {
     glfwPollEvents();
+}
+
+glm::vec2 Window::getDimensions() {
+    int width, height;
+    glfwGetWindowSize(m_Window, &width, &height);
+    return glm::vec2(width, height);
 }
 
 void Window::windowResizeCallback(GLFWwindow* _window, int _width, int _height) {

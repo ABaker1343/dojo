@@ -1,3 +1,6 @@
+#ifndef __HEADER_GAME_OBJECT
+#define __HEADER_GAME_OBJECT
+
 #include <glm/glm.hpp>
 
 
@@ -18,3 +21,5 @@ class GameObject {
 };
 
 }
+
+#endif
