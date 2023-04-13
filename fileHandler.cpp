@@ -1,6 +1,10 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "headers/fileHandler.hpp"
+#include "headers/stb_image.h"
 
 namespace dojo {
+
 
     std::string FileHandler::loadShaderCode(const std::string& _filepath) {
 

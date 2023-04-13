@@ -32,20 +32,27 @@ void Renderer::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::draw(Renderable& _object) {
-    glBindVertexArray(_object.getVertexArray());
-    std::cout << _object.getVertexArray() << std::endl;
-    glDrawArrays(GL_TRIANGLES, 0, _object.getVertexBufferSize() / 3);
+void Renderer::draw(Renderable* _object) {
+    // bind texture
+    
+    glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
+    
+    //bind uniforms
+    unsigned int worldTransformLoc = glGetUniformLocation(m_CurrentShader, "in_worldTransform");
+    glUniformMatrix4fv(worldTransformLoc, 1, GL_FALSE, glm::value_ptr(_object->getWorldTransform()));
+    
+    glBindVertexArray(_object->getVertexArray());
+
+    glDrawArrays(GL_TRIANGLES, 0, _object->getVertexBufferSize() / 3);
 }
 
 void Renderer::setShader(const std::string& _shader) {
-    unsigned int newShader = m_Shaders[_shader];
-    glUseProgram(newShader);
+    m_CurrentShader = m_Shaders[_shader];
+    glUseProgram(m_CurrentShader);
 }
 
 void Renderer::setShaderPath(const std::string& _shaderPath) {
     m_ShaderPath = _shaderPath;
-    std::cout << "eeee" << _shaderPath << " " << m_ShaderPath << std::endl;
 }
 
 void Renderer::loadShaders() {

@@ -26,4 +26,12 @@ unsigned int Renderable::getVertexArray() {
     return m_VertexArrayObject;
 }
 
+Texture* Renderable::getTexture() {
+    return m_Texture;
+}
+
+glm::mat4 Renderable::getWorldTransform() {
+    return m_WorldTransform;
+}
+
 }
