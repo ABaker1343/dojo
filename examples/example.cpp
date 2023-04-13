@@ -1,5 +1,6 @@
 #include "../headers/dojo.hpp"
 #include <iostream>
+#include <chrono>
 
 int main() {
     std::string title = "new window";
@@ -22,9 +23,14 @@ int main() {
     bool running = true;
     bool goingRight = true;
 
+    unsigned int frames = 0;
+
+    auto start = std::chrono::steady_clock::now();
+
     while(running) {
         renderer->clear();
         renderer->draw(obj);
+        w->flipBuffers();
         w->pollEvents();
         if (w->KEYS[GLFW_KEY_ESCAPE]) {
             running = false;
@@ -41,8 +47,13 @@ int main() {
         } else if (obj->getPos().x < -0.7) {
             goingRight = true;
         }
-        w->flipBuffers();
+        frames ++;
     }
+
+    auto end = std::chrono::steady_clock::now();
+
+    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(end-start);
+    std::cout << "frames per second: " << frames / elapsed.count() << std::endl;
 
     delete obj;
     delete renderer;
