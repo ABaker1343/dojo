@@ -21,6 +21,7 @@ namespace dojo {
 
         m_WorldTransform = glm::mat4(1.0f);
         setPos(glm::vec3(0,0,0));
+        setScale(glm::vec3(1.f));
     }
 
     void GameObject2D::setTexture(const std::string& _texturePath) {
@@ -59,6 +60,9 @@ namespace dojo {
 
     void GameObject2D::setScale(glm::vec3 _scale) {
         m_Scale = _scale;
+        m_WorldTransform[0][0] = m_Scale.x;
+        m_WorldTransform[1][1] = m_Scale.y;
+        m_WorldTransform[2][2] = m_Scale.z;
     }
 
     glm::vec3 GameObject2D::getPos() {

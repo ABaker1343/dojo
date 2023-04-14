@@ -32,7 +32,7 @@ void Renderer::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::draw(Renderable* _object) {
+void Renderer::draw(Camera* _camera, Renderable* _object) {
     // bind texture
     
     glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
@@ -40,6 +40,12 @@ void Renderer::draw(Renderable* _object) {
     //bind uniforms
     unsigned int worldTransformLoc = glGetUniformLocation(m_CurrentShader, "in_worldTransform");
     glUniformMatrix4fv(worldTransformLoc, 1, GL_FALSE, glm::value_ptr(_object->getWorldTransform()));
+
+    unsigned int cameraTransformLoc = glGetUniformLocation(m_CurrentShader, "in_cameraTransform");
+    glUniformMatrix4fv(cameraTransformLoc, 1, GL_FALSE, glm::value_ptr(_camera->getCameraTransform()));
+
+    unsigned int projectionTransformLoc = glGetUniformLocation(m_CurrentShader, "in_projectionTransform");
+    glUniformMatrix4fv(projectionTransformLoc, 1, GL_FALSE, glm::value_ptr(_camera->getProjectionTransform()));
     
     glBindVertexArray(_object->getVertexArray());
 

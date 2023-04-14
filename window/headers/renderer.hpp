@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "window.hpp"
+#include "../../gameObjects/headers/camera.hpp"
 #include "../../gameObjects/headers/renderable.hpp"
 #include "../../headers/fileHandler.hpp"
 
@@ -23,7 +24,7 @@ class Renderer {
         Renderer(Window* _window);
         ~Renderer();
 
-        void draw(Renderable* _object);
+        void draw(Camera* _camera, Renderable* _object);
         void setShader(const std::string& _shader);
         void setShaderPath(const std::string& _shaderPath);
         void loadShaders();

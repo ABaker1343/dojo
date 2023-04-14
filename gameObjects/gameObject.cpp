@@ -9,7 +9,7 @@ namespace dojo {
     }
 
     void GameObject::setPos(glm::vec3 _pos) {
-        m_Scale = _pos;
+        m_WorldPos = _pos;
     }
 
     void GameObject::setScale(glm::vec3 _scale) {

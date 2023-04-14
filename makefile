@@ -2,6 +2,7 @@ CC=g++
 FLAGS=-Wall -lGL -lglfw
 
 SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp)
+HEADERS=$(wildcard headers/*.hpp) $(wildcard window/headers/*.hpp) $(wildcard gameObjects/headers/*.hpp)
 #OBJ=$(pathsubst %.cpp, %.o, $(SOURCE)) glad.o
 OBJ=$(SOURCE:.cpp=.o) glad.o
 

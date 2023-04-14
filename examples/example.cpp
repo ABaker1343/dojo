@@ -12,6 +12,10 @@ int main() {
     renderer->setShaderPath("../shaders/");
     renderer->loadShaders();
 
+    dojo::Camera* cam = new dojo::Camera();
+    cam->setPos(glm::vec3(0.f, 0.f, 15.f));
+    cam->lookAt(glm::vec3(0.f));
+
     std::cout << "created renderer" << std::endl;
 
     dojo::GameObject2D *obj = new dojo::GameObject2D("stick_man.jpg");
@@ -29,7 +33,7 @@ int main() {
 
     while(running) {
         renderer->clear();
-        renderer->draw(obj);
+        renderer->draw(cam, obj);
         w->flipBuffers();
         w->pollEvents();
         if (w->KEYS[GLFW_KEY_ESCAPE]) {
@@ -37,9 +41,11 @@ int main() {
         }
         if (goingRight){
             obj->setPos(obj->getPos() + glm::vec3(0.01, 0, 0));
+            cam->setPos(cam->getPosition() + glm::vec3(0, 0, 0.1));
         }
         else {
             obj->setPos(obj->getPos() + glm::vec3(-0.01, 0, 0));
+            cam->setPos(cam->getPosition() + glm::vec3(0, 0, -0.1));
         }
 
         if (obj->getPos().x > 0.7) {
