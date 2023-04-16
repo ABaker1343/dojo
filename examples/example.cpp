@@ -11,7 +11,6 @@ int main() {
     dojo::Renderer *renderer = new dojo::Renderer(w);
     renderer->setShaderPath("../shaders/");
     renderer->loadShaders();
-    renderer->setShader("2DAnimated");
 
     dojo::Camera* cam = new dojo::Camera();
     cam->setPos(glm::vec3(0.f, 0.f, 15.f));
@@ -19,11 +18,10 @@ int main() {
 
     std::cout << "created renderer" << std::endl;
 
-    dojo::GameObject2DAnimated *obj = new dojo::GameObject2DAnimated("stick_man.jpg");
-    obj->addAnimation("idle", "stick_man.png", 1, 4);
-    obj->setAnimation("idle");
-
-    obj->setTexture("stick_man.png");
+    dojo::GameObject2DAnimated *obj = new dojo::GameObject2DAnimated("stick_man.jpg", 1, 4);
+    renderer->setShader("2DAnimated");
+    //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");
+    //renderer->setShader("2DStatic");
 
     std::cout << "created game object" << std::endl;
 
@@ -60,7 +58,11 @@ int main() {
         if (frames % 10 == 0){
             if (!obj->nextFrame()) {
                 obj->resetAnimation();
+                obj->flipx();
             }
+        }
+        if (frames % 100 == 0) {
+            obj->flipy();
         }
         frames ++;
     }

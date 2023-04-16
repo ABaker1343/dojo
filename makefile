@@ -1,4 +1,4 @@
-CC=g++
+CC=g++ --std=c++20
 FLAGS=-Wall -lGL -lglfw
 
 SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp)

@@ -13,6 +13,7 @@ struct AnimationData {
 };
 
 uniform AnimationData in_animationData;
+uniform ivec2 in_flip;
 
 void main() {
     // calculate the size of the chunk
@@ -27,6 +28,7 @@ void main() {
 
     // move the coords to the chunk they should be rendering
     texCoords.x = texCoords.x + (animationChunkX * in_animationData.currentFrame);
+    texCoords = texCoords * in_flip;
 
     fragColor = texture(in_texture, texCoords);
 }

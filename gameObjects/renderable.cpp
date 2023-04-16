@@ -3,7 +3,7 @@
 namespace dojo {
 
 Renderable::Renderable() {
-    // create nice
+    // empty constructor
 }
 
 Renderable::~Renderable() {
@@ -24,10 +24,6 @@ unsigned int Renderable::getVertexBufferSize() {
 
 unsigned int Renderable::getVertexArray() {
     return m_VertexArrayObject;
-}
-
-Texture* Renderable::getTexture() {
-    return m_Texture;
 }
 
 glm::mat4 Renderable::getWorldTransform() {

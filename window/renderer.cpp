@@ -33,10 +33,6 @@ void Renderer::clear() {
 }
 
 void Renderer::draw(Camera* _camera, Renderable* _object) {
-    // bind texture
-    
-    glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
-    
     //bind uniforms
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
     setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
@@ -47,12 +43,26 @@ void Renderer::draw(Camera* _camera, Renderable* _object) {
     glDrawArrays(GL_TRIANGLES, 0, _object->getVertexBufferSize() / 3);
 }
 
-void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
-    glBindTexture(GL_TEXTURE_2D, _object->getTextureHandle());
+void Renderer::draw(Camera* _camera, GameObject2DStatic* _object) {
+    glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
 
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
     setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
     setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+    setUniformIVec2("in_flip", _object->getFlip());
+    
+    glBindVertexArray(_object->getVertexArray());
+
+    glDrawArrays(GL_TRIANGLES, 0, _object->getVertexBufferSize() / 3);
+}
+
+void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
+    glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
+
+    setUniformMat4("in_worldTransform", _object->getWorldTransform());
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+    setUniformIVec2("in_flip", _object->getFlip());
 
     setUniformInt("in_animationData.numFrames", _object->getNumFrames());
     setUniformInt("in_animationData.currentFrame", _object->getCurrentFrameNum());
@@ -66,6 +76,11 @@ void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
 void Renderer::setUniformMat4(const char* _name, glm::mat4 _value) {
     unsigned int loc = glGetUniformLocation(m_CurrentShader, _name);
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(_value));
+}
+
+void Renderer::setUniformIVec2(const char* _name, glm::vec2 _value) {
+    unsigned int loc = glGetUniformLocation(m_CurrentShader, _name);
+    glUniform2i(loc, _value.x, _value.y);
 }
 
 void Renderer::setUniformInt(const char* _name, int _value) {
@@ -84,7 +99,7 @@ void Renderer::setShaderPath(const std::string& _shaderPath) {
 
 void Renderer::loadShaders() {
     // load the shaders to use
-    std::vector<std::string> shaderNames = {"default", "2DAnimated"};
+    std::vector<std::string> shaderNames = {"default", "2DAnimated", "2DStatic"};
 
     for (const std::string& shader : shaderNames) {
         // load the shader

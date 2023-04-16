@@ -2,10 +2,7 @@
 
 namespace dojo {
     
-    GameObject2D::GameObject2D(const std::string& _texturePath) : GameObject() {
-        m_Texture = nullptr;
-        setTexture(_texturePath);
-
+    GameObject2D::GameObject2D() : GameObject() {
         m_VertexData = new std::vector<float> {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
             -0.5f, 0.5f, 0.0f,  0.0f, 1.0f,
@@ -22,14 +19,8 @@ namespace dojo {
         m_WorldTransform = glm::mat4(1.0f);
         setPos(glm::vec3(0,0,0));
         setScale(glm::vec3(1.f));
-    }
-
-    void GameObject2D::setTexture(const std::string& _texturePath) {
-        // set the texture of the object for rendering
-        if (!(m_Texture == nullptr)) {
-            delete m_Texture;
-        }
-        m_Texture = new Texture(_texturePath);
+        
+        m_Flip = glm::ivec2(1,1);
     }
 
     void GameObject2D::createBuffers() {
@@ -52,29 +43,47 @@ namespace dojo {
     }
 
     void GameObject2D::setPos(glm::vec3 _pos) {
-        m_WorldPos = _pos;
-        m_WorldTransform[3][0] = m_WorldPos.x;
-        m_WorldTransform[3][1] = m_WorldPos.y;
-        m_WorldTransform[3][2] = m_WorldPos.z;
+        m_WorldTransform[3][0] = _pos.x;
+        m_WorldTransform[3][1] = _pos.y;
+        m_WorldTransform[3][2] = _pos.z;
     }
 
     void GameObject2D::setScale(glm::vec3 _scale) {
-        m_Scale = _scale;
-        m_WorldTransform[0][0] = m_Scale.x;
-        m_WorldTransform[1][1] = m_Scale.y;
-        m_WorldTransform[2][2] = m_Scale.z;
+        m_WorldTransform[0][0] = _scale.x;
+        m_WorldTransform[1][1] = _scale.y;
+        m_WorldTransform[2][2] = _scale.z;
+    }
+
+    void GameObject2D::flipx() {
+        m_Flip.x = m_Flip.x * -1;
+    }
+    
+    void GameObject2D::flipy() {
+        m_Flip.y = m_Flip.y * -1;
     }
 
     glm::vec3 GameObject2D::getPos() {
-        return m_WorldPos;
+        glm::vec3 pos;
+        pos.x = m_WorldTransform[3][0];
+        pos.y = m_WorldTransform[3][1];
+        pos.z = m_WorldTransform[3][2];
+        return pos;
     }
     
     glm::vec3 GameObject2D::getScale() {
-        return m_Scale;
+        glm::vec3 scale;
+        scale.x = m_WorldTransform[0][0];
+        scale.y = m_WorldTransform[1][1];
+        scale.x = m_WorldTransform[2][2];
+        return scale;
+    }
+
+    glm::ivec2 GameObject2D::getFlip() {
+        return m_Flip;
     }
 
     GameObject2D::~GameObject2D() {
-        delete m_Texture;
+
     }
 
 }

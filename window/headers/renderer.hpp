@@ -16,6 +16,7 @@
 #include "../../gameObjects/headers/renderable.hpp"
 #include "../../headers/fileHandler.hpp"
 #include "../../gameObjects/headers/gameObject2DAnimated.hpp"
+#include "../../gameObjects/headers/gameObject2DStatic.hpp"
 
 namespace dojo{
 
@@ -26,6 +27,7 @@ class Renderer {
         ~Renderer();
 
         void draw(Camera* _camera, Renderable* _object);
+        void draw(Camera* _camera, GameObject2DStatic* _object);
         void draw(Camera* _camera, GameObject2DAnimated* _object);
         void setShader(const std::string& _shader);
         void setShaderPath(const std::string& _shaderPath);
@@ -41,6 +43,7 @@ class Renderer {
         std::map<std::string, unsigned int> m_Shaders;
 
         void setUniformMat4(const char* _name, glm::mat4 _value);
+        void setUniformIVec2(const char* _name, glm::vec2 _value);
         void setUniformInt(const char* _name, int _value);
 
         

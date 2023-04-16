@@ -19,17 +19,19 @@ typedef struct {
 
 class GameObject2DAnimated : public GameObject2D {
     public:
-        GameObject2DAnimated(const std::string& _texturePath);
+        GameObject2DAnimated(const std::string& _texturePath, int _textureRows, int _numFrames, const std::string& _name = "default");
         ~GameObject2DAnimated();
 
         void addAnimation(const std::string& _name, const std::string& _animationPath, int _textureRows, int _numFrames);
-        void setAnimation(const std::string& _name);
+        bool setAnimation(const std::string& _name);
+
         bool nextFrame();
         void resetAnimation();
-        unsigned int getTextureHandle();
+
         int getNumFrames();
         int getCurrentFrameNum();
         int getCurrentAnimationRows();
+        Texture* getTexture();
 
     protected:
         std::map<std::string, Animation> m_Animations;

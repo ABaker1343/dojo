@@ -2,8 +2,10 @@
 
 namespace dojo {
 
-    GameObject2DAnimated::GameObject2DAnimated(const std::string& _texturePath) :GameObject2D(_texturePath){
+    GameObject2DAnimated::GameObject2DAnimated(const std::string& _animationPath, int _textureRows, int _numFrames, const std::string& _name) : GameObject2D() {
         m_Animations = std::map<std::string, Animation>();
+        addAnimation(_name, _animationPath, _textureRows, _numFrames);
+        setAnimation(_name);
     }
 
     GameObject2DAnimated::~GameObject2DAnimated() {
@@ -26,8 +28,12 @@ namespace dojo {
 
     }
 
-    void GameObject2DAnimated::setAnimation(const std::string& _name) {
+    bool GameObject2DAnimated::setAnimation(const std::string& _name) {
+        if (!m_Animations.contains(_name)) {
+            return false;
+        }
         m_CurrentAnimation = &(m_Animations[_name]);
+        return true;
     }
 
     bool GameObject2DAnimated::nextFrame() {
@@ -42,8 +48,8 @@ namespace dojo {
         m_CurrentAnimation->currentFrame = 0;
     }
 
-    unsigned int GameObject2DAnimated::getTextureHandle() {
-        return m_CurrentAnimation->texture->getHandle();
+    Texture* GameObject2DAnimated::getTexture() {
+        return m_CurrentAnimation->texture;;
     }
 
     int GameObject2DAnimated::getNumFrames() {
