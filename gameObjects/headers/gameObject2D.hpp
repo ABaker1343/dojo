@@ -17,16 +17,16 @@ class GameObject2D : public GameObject, public Renderable {
         ~GameObject2D();
 
         void setTexture(const std::string& _texturePath);
-        void setPos(glm::vec3 _pos);
-        void setScale(glm::vec3 _scale);
+        void setPos(glm::vec3 _pos) override;
+        void setScale(glm::vec3 _scale) override;
 
-        glm::vec3 getPos();
-        glm::vec3 getScale();
+        glm::vec3 getPos() override;
+        glm::vec3 getScale() override;
 
     protected:
         std::vector<float> *m_VertexData;
 
-        void createBuffers();
+        void createBuffers() override;
         
 
 };
