@@ -17,7 +17,15 @@ class GameObject2D : public GameObject, public Renderable {
         ~GameObject2D();
 
         void setPos(glm::vec3 _pos) override;
+        void setPos(float _x, float _y, float _z) override;
+        void setPos(glm::vec2 _pos);
+        void setPos(float _x, float _y);
+
         void setScale(glm::vec3 _scale) override;
+        void setScale(float _x, float _y, float _z) override;
+        void setScale(glm::vec2 _scale);
+        void setScale(float _x, float _y);
+
 
         void flipx();
         void flipy();
