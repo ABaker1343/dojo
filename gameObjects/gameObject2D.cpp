@@ -48,7 +48,9 @@ namespace dojo {
         m_WorldTransform[3][2] = _z;
     }
     void GameObject2D::setPos(glm::vec3 _pos) {
-        setPos(_pos.x, _pos.y, _pos.z);
+        m_WorldTransform[3][0] = _pos.x;
+        m_WorldTransform[3][1] = _pos.y;
+        m_WorldTransform[3][2] = _pos.z;
     }
 
     void GameObject2D::setPos(float _x, float _y) {
@@ -56,7 +58,8 @@ namespace dojo {
         m_WorldTransform[3][1] = _y;
     }
     void GameObject2D::setPos(glm::vec2 _pos) {
-        setPos(_pos.x, _pos.y);
+        m_WorldTransform[3][0] = _pos.x;
+        m_WorldTransform[3][1] = _pos.y;
     }
 
     void GameObject2D::setScale(float _x, float _y, float _z) {

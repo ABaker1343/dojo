@@ -9,10 +9,16 @@ OBJ=$(SOURCE:.cpp=.o) glad.o
 libdojo.so: $(OBJ)
 	$(CC) --shared -o $@ $^ $(FLAGS)
 
-%.o: %.cpp
+window/%.o: window/%.cpp window/headers/%.hpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+	
+gameObjects/%.o: gameObjects/%.cpp gameObjects/headers/%.hpp
 	$(CC) -fPIC -c -o $@ $< $(FLAGS)
 
 glad.o: glad.c
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+%.o: %.cpp
 	$(CC) -fPIC -c -o $@ $< $(FLAGS)
 
 clean:

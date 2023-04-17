@@ -103,8 +103,8 @@ void Renderer::loadShaders() {
 
     for (const std::string& shader : shaderNames) {
         // load the shader
-        std::string vertSource = FileHandler::loadShaderCode("../shaders/" + shader + ".vert");
-        std::string fragSource = FileHandler::loadShaderCode(m_ShaderPath + shader + ".frag");
+        std::string vertSource = FileHandler::loadShaderCode("../shaders/" + shader + ".vert.glsl");
+        std::string fragSource = FileHandler::loadShaderCode(m_ShaderPath + shader + ".frag.glsl");
 
         unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
         unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);

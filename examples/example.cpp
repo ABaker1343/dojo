@@ -41,12 +41,16 @@ int main() {
             running = false;
         }
         if (goingRight){
-            obj->setPos(obj->getPos() + glm::vec3(0.01, 0, 0));
-            cam->setPos(cam->getPosition() + glm::vec3(0, 0, 0.1));
+            //obj->setPos(obj->getPos() + glm::vec3(0.01, 0, 0));
+            auto currpos = obj->getPos();
+            obj->setPos(currpos.x + 0.01, currpos.y);
+            //cam->setPos(cam->getPosition() + glm::vec3(0, 0, 0.1));
         }
         else {
-            obj->setPos(obj->getPos() + glm::vec3(-0.01, 0, 0));
-            cam->setPos(cam->getPosition() + glm::vec3(0, 0, -0.1));
+            //obj->setPos(obj->getPos() + glm::vec3(-0.01, 0, 0));
+            auto currpos = obj->getPos();
+            obj->setPos(currpos.x + -0.01, currpos.y);
+            //cam->setPos(cam->getPosition() + glm::vec3(0, 0, -0.1));
         }
 
         if (obj->getPos().x > 0.7) {
