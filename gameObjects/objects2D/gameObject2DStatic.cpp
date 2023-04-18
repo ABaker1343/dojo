@@ -1,4 +1,4 @@
-#include "headers/gameObject2DStatic.hpp"
+#include "../headers/objects2D/gameObject2DStatic.hpp"
 
 namespace dojo {
     GameObject2DStatic::GameObject2DStatic(const std::string& _texturePath) : GameObject2D() {

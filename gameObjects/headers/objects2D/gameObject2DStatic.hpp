@@ -2,8 +2,7 @@
 #define __HEADER_GAME_OBJECT_2D_STATIC
 
 #include "gameObject2D.hpp"
-#include "renderable.hpp"
-#include "texture.hpp"
+#include "../texture.hpp"
 
 #include <string>
 #include <vector>

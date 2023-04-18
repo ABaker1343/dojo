@@ -15,8 +15,8 @@
 #include "../../gameObjects/headers/camera.hpp"
 #include "../../gameObjects/headers/renderable.hpp"
 #include "../../headers/fileHandler.hpp"
-#include "../../gameObjects/headers/gameObject2DAnimated.hpp"
-#include "../../gameObjects/headers/gameObject2DStatic.hpp"
+#include "../../gameObjects/headers/objects2D/gameObject2DAnimated.hpp"
+#include "../../gameObjects/headers/objects2D/gameObject2DStatic.hpp"
 
 namespace dojo{
 

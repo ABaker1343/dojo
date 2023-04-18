@@ -1,4 +1,4 @@
-#include "headers/gameObject2DAnimated.hpp"
+#include "../headers/objects2D/gameObject2DAnimated.hpp"
 
 namespace dojo {
 

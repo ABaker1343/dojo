@@ -4,8 +4,7 @@
 #include <map>
 
 #include "gameObject2D.hpp"
-#include "renderable.hpp"
-#include "texture.hpp"
+#include "../texture.hpp"
 
 namespace dojo {
 

@@ -1,9 +1,8 @@
 #ifndef __HEADER_GAME_OBJECT_2D
 #define __HEADER_GAME_OBJECT_2D
 
-#include "gameObject.hpp"
-#include "renderable.hpp"
-#include "texture.hpp"
+#include "../gameObject.hpp"
+#include "../renderable.hpp"
 
 #include <string>
 #include <vector>

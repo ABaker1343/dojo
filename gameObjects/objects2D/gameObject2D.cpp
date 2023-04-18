@@ -1,15 +1,15 @@
-#include "headers/gameObject2D.hpp"
+#include "../headers/objects2D/gameObject2D.hpp"
 
 namespace dojo {
     
     GameObject2D::GameObject2D() : GameObject() {
         m_VertexData = new std::vector<float> {
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, 0.0f,  0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f,   1.0f, 1.0f,
-            0.5f, 0.5f, 0.0f,   1.0f, 1.0f,
-            0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+            1.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+            1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
         };
 
         m_VertexBufferSize = m_VertexData->size();
@@ -17,6 +17,7 @@ namespace dojo {
         createBuffers();
 
         m_WorldTransform = glm::mat4(1.0f);
+
         setPos(glm::vec3(0,0,0));
         setScale(glm::vec3(1.f));
         
@@ -99,7 +100,7 @@ namespace dojo {
         glm::vec3 scale;
         scale.x = m_WorldTransform[0][0];
         scale.y = m_WorldTransform[1][1];
-        scale.x = m_WorldTransform[2][2];
+        scale.z = m_WorldTransform[2][2];
         return scale;
     }
 
