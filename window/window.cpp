@@ -3,6 +3,16 @@
 namespace dojo {
 
 bool Window::KEYS[GLFW_KEY_LAST + 1];
+std::vector<keyCallback> Window::m_keyCallbacks = std::vector<keyCallback>();
+bool Window::m_usingDefaultKeyCallback = false;
+keyCallback Window::m_defaultKeyCallback = [](int _key, int _scancode, int _action, int _mode) -> void {
+    if (_action == GLFW_PRESS) {
+        KEYS[_key] = true;
+    }
+    if (_action == GLFW_RELEASE) {
+        KEYS[_key] = false;
+    }
+};
 
 Window::Window(int _width, int _height, const std::string& _title){
 
@@ -48,13 +58,29 @@ void Window::setWindowCallbacks() {
     glfwSetFramebufferSizeCallback(m_Window, windowResizeCallback);
 }
 
+void Window::setCustomKeyCallback(keyCallback _callback) {
+    m_keyCallbacks.push_back(_callback);
+}
+
+void Window::useDefaultKeyCallback(bool _use) {
+    m_usingDefaultKeyCallback = _use;
+}
+
 void Window::windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods) {
     // when a key is pressed add it to the array
-    if (_action == GLFW_PRESS) {
-        KEYS[_key] = true;
+    
+    if (m_usingDefaultKeyCallback) {
+        if (_action == GLFW_PRESS) {
+            KEYS[_key] = true;
+        }
+        if (_action == GLFW_RELEASE) {
+            KEYS[_key] = false;
+        }
     }
-    if (_action == GLFW_RELEASE) {
-        KEYS[_key] = false;
+    
+
+    for (unsigned int i = 0; i < m_keyCallbacks.size(); i++){
+        m_keyCallbacks[i](_key, _scancode, _action, _mods);
     }
 }
 
