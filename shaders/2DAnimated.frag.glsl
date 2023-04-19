@@ -27,11 +27,7 @@ void main() {
     texCoords.y = frag_texCoords.y * animationChunkY;
 
     // move the coords to the chunk they should be rendering
-    if (in_flip.x == 1) {
-        texCoords.x = texCoords.x + (animationChunkX * in_animationData.currentFrame);
-    } else {
-        texCoords.x = texCoords.x - animationChunkX - (animationChunkX * in_animationData.currentFrame);
-    }
+    texCoords.x = texCoords.x - (0.5 * animationChunkX) + (in_flip.x * animationChunkX * 0.5) + (in_flip.x * animationChunkX * in_animationData.currentFrame);
 
     fragColor = texture(in_texture, texCoords);
 }

@@ -16,21 +16,21 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object) {
     auto timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(thisUpdateTime - lastUpdateTime).count();
     auto animationTimePassed = std::chrono::duration_cast<std::chrono::milliseconds>(thisUpdateTime - lastAnimationTime).count();
     
-    float movementSpeed = 1 * (timePassed / 1000.f); // seconds
+    float movementSpeed = 3 * (timePassed / 1000.f); // seconds
     float animationSpeed = 1000.f / 5.f; // frames per seconds
 
     if (_window->KEYS[GLFW_KEY_D]) {
         if (_object->getFlip().x != dojo::GameObject2D::FACE_RIGHT) {
             _object->flipx();
         }
-        if (animationTimePassed > animationSpeed) {
+
+        if (_object->currentAnimation() != "Walking") {
+            _object->setAnimation("Walking");
+            _object->resetAnimation();
+        }
+        else if (animationTimePassed > animationSpeed) {
             lastAnimationTime = std::chrono::steady_clock::now();
-            if (_object->currentAnimation() == "Walking") {
-                if(!_object->nextFrame()) {
-                    _object->resetAnimation();
-                }
-            } else {
-                _object->setAnimation("Walking");
+            if(!_object->nextFrame()) {
                 _object->resetAnimation();
             }
         }
@@ -42,14 +42,14 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object) {
         if (_object->getFlip().x != dojo::GameObject2D::FACE_LEFT) {
             _object->flipx();
         }
-        if (animationTimePassed > animationSpeed) {
+
+        if (_object->currentAnimation() != "Walking") {
+            _object->setAnimation("Walking");
+            _object->resetAnimation();
+        }
+        else if (animationTimePassed > animationSpeed) {
             lastAnimationTime = std::chrono::steady_clock::now();
-            if (_object->currentAnimation() == "Walking") {
-                if(!_object->nextFrame()) {
-                    _object->resetAnimation();
-                }
-            } else {
-                _object->setAnimation("Walking");
+            if(!_object->nextFrame()) {
                 _object->resetAnimation();
             }
         }
@@ -90,14 +90,20 @@ int main() {
 
     std::cout << "created renderer" << std::endl;
 
+    dojo::GameObject2DStatic *background = new dojo::GameObject2DStatic("Final/Social/test_2.png");
+    background->setScale(glm::vec3(40, 20, 1));
+    background->setPos(glm::vec3(0, 0, -10));
+
     dojo::GameObject2DAnimated *obj1 = new dojo::GameObject2DAnimated("Enchantress/Idle.png", 1, 5, "Idle");
     obj1->addAnimation("Walking", "Enchantress/Walk.png", 1, 8);
-    obj1->setScale(glm::vec3(2));
+    obj1->setScale(glm::vec3(3));
+    obj1->setPos(glm::vec3(0, -5, 0));
     dojo::BoxCollider *box1 = new dojo::BoxCollider(obj1->getPos(), obj1->getScale());
 
     dojo::GameObject2DStatic *obj2 = new dojo::GameObject2DStatic("stick_man.png");
     obj2->setScale(glm::vec3(0.75));
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
+    obj2->setPos(obj2->getPos() + glm::vec3(0, 0, -1));
 
     //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");
     //renderer->setShader("2DStatic");
@@ -110,16 +116,13 @@ int main() {
 
     auto start = std::chrono::steady_clock::now();
 
-    float frametimeMilliseconds = 1000.f/60.f;
-
     while(running) {
-
-        auto frameStart = std::chrono::steady_clock::now();
         renderer->clear();
+        renderer->setShader("2DStatic");
+        renderer->draw(cam, background);
+        renderer->draw(cam, obj2);
         renderer->setShader("2DAnimated");
         renderer->draw(cam, obj1);
-        renderer->setShader("2DStatic");
-        renderer->draw(cam, obj2);
         w->flipBuffers();
         w->pollEvents();
         if (w->KEYS[GLFW_KEY_ESCAPE]) {
@@ -130,14 +133,6 @@ int main() {
         obj2->flipx();
 
         frames ++;
-        auto frameEnd = std::chrono::steady_clock::now();
-
-        auto frameElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(frameEnd - frameStart).count();
-        
-        if (frameElapsed < frametimeMilliseconds) {
-            int sleepTime = frametimeMilliseconds - frameElapsed;
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
-        }
     }
 
     auto end = std::chrono::steady_clock::now();

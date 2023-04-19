@@ -11,6 +11,10 @@ Renderer::Renderer(Window* _window, glm::vec2 _VPSize) {
 
     glViewport(0, 0, _VPSize.x, _VPSize.y);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
     setShaderPath("shaders/");
     
 }
