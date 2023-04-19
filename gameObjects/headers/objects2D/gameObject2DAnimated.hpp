@@ -9,6 +9,7 @@
 namespace dojo {
 
 typedef struct {
+    std::string name;
     Texture* texture;
     int numFrames;
     int currentFrame;
@@ -30,11 +31,14 @@ class GameObject2DAnimated : public GameObject2D {
         int getNumFrames();
         int getCurrentFrameNum();
         int getCurrentAnimationRows();
+        std::string currentAnimation();
+
         Texture* getTexture();
 
     protected:
         std::map<std::string, Animation> m_Animations;
         Animation* m_CurrentAnimation;
+        float m_TimeSinceLastAnimation;
 };
 
 }

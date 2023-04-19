@@ -18,7 +18,7 @@ uniform ivec2 in_flip;
 void main() {
     // calculate the size of the chunk
 
-    float animationChunkY = 1.0/in_animationData.rows;
+    float animationChunkY = (1.0/in_animationData.rows);
     float animationChunkX = 1.0/(in_animationData.numFrames/in_animationData.rows);
 
     // convert any 1.0 texCoords to be only 1 chunk in size
@@ -27,8 +27,11 @@ void main() {
     texCoords.y = frag_texCoords.y * animationChunkY;
 
     // move the coords to the chunk they should be rendering
-    texCoords.x = texCoords.x + (animationChunkX * in_animationData.currentFrame);
-    texCoords = texCoords * in_flip;
+    if (in_flip.x == 1) {
+        texCoords.x = texCoords.x + (animationChunkX * in_animationData.currentFrame);
+    } else {
+        texCoords.x = texCoords.x - animationChunkX - (animationChunkX * in_animationData.currentFrame);
+    }
 
     fragColor = texture(in_texture, texCoords);
 }

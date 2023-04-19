@@ -18,6 +18,7 @@ namespace dojo {
     void GameObject2DAnimated::addAnimation(const std::string& _name, const std::string& _animationPath, int _textureRows, int _numFrames) {
         Animation newAnimation = Animation();
 
+        newAnimation.name = _name;
         newAnimation.texture = new Texture(_animationPath);
         newAnimation.currentFrame = 0;
         newAnimation.textureRows = _textureRows;
@@ -62,5 +63,9 @@ namespace dojo {
 
     int GameObject2DAnimated::getCurrentAnimationRows() {
         return m_CurrentAnimation->textureRows;
+    }
+
+    std::string GameObject2DAnimated::currentAnimation() {
+        return m_CurrentAnimation->name;
     }
 }

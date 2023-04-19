@@ -29,6 +29,11 @@ class GameObject2D : public GameObject, public Renderable {
         void flipx();
         void flipy();
 
+        enum FlipState {
+            FACE_LEFT = -1,
+            FACE_RIGHT = 1,
+        };
+
         glm::vec3 getPos() override;
         glm::vec3 getScale() override;
 
