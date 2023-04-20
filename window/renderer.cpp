@@ -3,25 +3,23 @@
 
 namespace dojo {
 
-Renderer::Renderer(Window* _window, glm::vec2 _VPSize) {
+Renderer::Renderer(Window* _window, glm::vec2 _VPPos, glm::vec2 _VPSize) {
 
     m_Window = _window;
 
     // glfw window hints
 
-    glViewport(0, 0, _VPSize.x, _VPSize.y);
+    m_VPScale = _VPSize;
+    m_VPPos = _VPPos;
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquation(GL_FUNC_ADD);
     setShaderPath("shaders/");
+    resize();
+    _window->bindRenderer(this);
     
-}
-
-Renderer::Renderer(Window* _window) {
-    glm::vec2 windowSize = _window->getDimensions();
-    Renderer(_window, windowSize);
 }
 
 Renderer::~Renderer() {
@@ -38,6 +36,7 @@ void Renderer::clear() {
 
 void Renderer::draw(Camera* _camera, Renderable* _object) {
     //bind uniforms
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
     setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
     setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
@@ -48,6 +47,7 @@ void Renderer::draw(Camera* _camera, Renderable* _object) {
 }
 
 void Renderer::draw(Camera* _camera, GameObject2DStatic* _object) {
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
 
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
@@ -61,6 +61,7 @@ void Renderer::draw(Camera* _camera, GameObject2DStatic* _object) {
 }
 
 void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
 
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
@@ -156,6 +157,14 @@ void Renderer::loadShaders() {
     }
 
     setShader("default");
+}
+
+void Renderer::resize() {
+    glm::vec2 winDim = m_Window->getDimensions();
+    m_VPAbsScale.x = winDim.x * m_VPScale.x;
+    m_VPAbsScale.y = winDim.y * m_VPScale.y;
+    m_VPAbsPos.x = winDim.x * m_VPPos.x;
+    m_VPAbsPos.y = winDim.y * m_VPPos.y;
 }
 
 }

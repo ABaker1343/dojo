@@ -94,6 +94,10 @@ int main() {
     renderer->setShaderPath("../shaders/");
     renderer->loadShaders();
 
+    w->setCustomResizeCallback([renderer](int _width, int _height) {
+            renderer->resize();
+            });
+
     dojo::Camera* cam = new dojo::Camera();
     cam->setPos(glm::vec3(0.f, 0.f, 15.f));
     cam->lookAt(glm::vec3(0.f));

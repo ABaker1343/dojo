@@ -1,26 +1,44 @@
 #include "headers/window.hpp"
+#include <GLFW/glfw3.h>
 
 namespace dojo {
 
 bool Window::KEYS[GLFW_KEY_LAST + 1];
-std::vector<keyCallback> Window::m_keyCallbacks = std::vector<keyCallback>();
+bool Window::MOUSE_BUTTONS[GLFW_MOUSE_BUTTON_LAST + 1];
+glm::vec2 Window::m_MousePos = glm::vec2();
+
+std::vector<KeyCallback> Window::m_keyCallbacks = std::vector<KeyCallback>();
+std::vector<MouseCallback> Window::m_mouseCallbacks = std::vector<MouseCallback>();
+std::vector<CursorPosCallback> Window::m_cursorPosCallbacks = std::vector<CursorPosCallback>();
+std::vector<ResizeCallback> Window::m_resizeCallbacks = std::vector<ResizeCallback>();
+
 bool Window::m_usingDefaultKeyCallback = false;
-keyCallback Window::m_defaultKeyCallback = [](int _key, int _scancode, int _action, int _mode) -> void {
+bool Window::m_usingDefaultMouseCallback = false;
+bool Window::m_usingDefaultCursorCallback = false;
+bool Window::m_usingDefaultResizeCallback = false;
+
+std::vector<Renderer*> Window::m_ActiveRenderers = std::vector<Renderer*>();
+
+
+/*KeyCallback Window::m_defaultKeyCallback = [](int _key, int _scancode, int _action, int _mode) -> void {
     if (_action == GLFW_PRESS) {
         KEYS[_key] = true;
     }
     if (_action == GLFW_RELEASE) {
         KEYS[_key] = false;
     }
-};
+};*/
 
 Window::Window(int _width, int _height, const std::string& _title){
 
     initWindow(_width, _height, _title);
 
     // initialize keys
-    for (int i = 0; i < GLFW_KEY_LAST + 1; i++) {
+    for (int i = 0; i <= GLFW_KEY_LAST; i++) {
         KEYS[i] = false;
+    }
+    for (unsigned int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i++) {
+        MOUSE_BUTTONS[i] = false;
     }
 
     // set window callback
@@ -50,37 +68,100 @@ void Window::initWindow(int _width, int _height, const std::string& _title) {
         throw std::runtime_error("failed to initialize glad");
     }
 
+    if (glfwRawMouseMotionSupported()) {
+        glfwSetInputMode(m_Window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    }
+
 }
 
 void Window::setWindowCallbacks() {
     glfwSetKeyCallback(m_Window, windowKeyCallback);
     glfwSetWindowSizeCallback(m_Window, windowResizeCallback);
+    glfwSetMouseButtonCallback(m_Window, windowMouseCallback);
+    glfwSetCursorPosCallback(m_Window, windowCursorPosCallback);
     glfwSetFramebufferSizeCallback(m_Window, windowResizeCallback);
 }
 
-void Window::setCustomKeyCallback(keyCallback _callback) {
+void Window::setCustomKeyCallback(KeyCallback _callback) {
     m_keyCallbacks.push_back(_callback);
+}
+void Window::setCustomMouseCallback(MouseCallback _callback) {
+    m_mouseCallbacks.push_back(_callback);
+}
+void Window::setCustomCursorPosCallback(CursorPosCallback _callback) {
+    m_cursorPosCallbacks.push_back(_callback);
+}
+void Window::setCustomResizeCallback(ResizeCallback _callback) {
+    m_resizeCallbacks.push_back(_callback);
 }
 
 void Window::useDefaultKeyCallback(bool _use) {
     m_usingDefaultKeyCallback = _use;
+}
+void Window::useDefaultMouseCallback(bool _use) {
+    m_usingDefaultMouseCallback = _use;
+}
+void Window::useDefaultCursorPosCallback(bool _use) {
+    m_usingDefaultCursorCallback = _use;
+}
+void Window::useDefaultResizeCallback(bool _use) {
+    m_usingDefaultResizeCallback = _use;
 }
 
 void Window::windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods) {
     // when a key is pressed add it to the array
     
     if (m_usingDefaultKeyCallback) {
-        if (_action == GLFW_PRESS) {
-            KEYS[_key] = true;
-        }
-        if (_action == GLFW_RELEASE) {
-            KEYS[_key] = false;
+        switch (_action) {
+            case GLFW_PRESS:
+                KEYS[_key] = true;
+                break;
+            case GLFW_RELEASE:
+                KEYS[_key] = false;
+                break;
         }
     }
     
 
     for (unsigned int i = 0; i < m_keyCallbacks.size(); i++){
         m_keyCallbacks[i](_key, _scancode, _action, _mods);
+    }
+}
+
+void Window::windowMouseCallback(GLFWwindow *_window, int _button, int _action, int _mods) {
+    if (m_usingDefaultMouseCallback) {
+        switch (_action) {
+            case GLFW_PRESS:
+                MOUSE_BUTTONS[_button] = true;
+                break;
+            case GLFW_RELEASE:
+                MOUSE_BUTTONS[_button] = false;
+        }
+    }
+
+    for (unsigned int i = 0; i < m_mouseCallbacks.size(); i++) {
+        m_mouseCallbacks[i](_button, _action, _mods);
+    }
+}
+
+void Window::windowCursorPosCallback(GLFWwindow *_window, double _xpos, double _ypos) {
+    if (m_usingDefaultCursorCallback) {
+        m_MousePos.x = _xpos;
+        m_MousePos.y = _ypos;
+    }
+
+    for (unsigned int i = 0; i < m_cursorPosCallbacks.size(); i++) {
+        m_cursorPosCallbacks[i](_xpos, _ypos);
+    }
+}
+
+void Window::windowResizeCallback(GLFWwindow* _window, int _width, int _height) {
+    if (m_usingDefaultResizeCallback) {
+
+    }
+
+    for (unsigned int i = 0; i < m_resizeCallbacks.size(); i++) {
+        m_resizeCallbacks[i](_width, _height);
     }
 }
 
@@ -98,8 +179,8 @@ glm::vec2 Window::getDimensions() {
     return glm::vec2(width, height);
 }
 
-void Window::windowResizeCallback(GLFWwindow* _window, int _width, int _height) {
-
+void Window::bindRenderer(Renderer* _renderer) {
+    m_ActiveRenderers.push_back(_renderer);
 }
 
 Window::~Window() {
