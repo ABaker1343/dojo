@@ -1,8 +1,8 @@
 CC=g++ --std=c++20
-FLAGS=-Wall -lGL -lglfw
+FLAGS=-Wall -lGL -lglfw $(shell pkg-config --cflags freetype2)
 
-SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp) $(wildcard gameObjects/objects2D/*.cpp) $(wildcard gameObjects/colliders/*.cpp)
-HEADERS=$(wildcard headers/*.hpp) $(wildcard window/headers/*.hpp) $(wildcard gameObjects/headers/*.hpp) $(wildcard gameObjects/headers/objects2D/*.cpp) $(wildcard gameObjects/headers/colliders/*.cpp)
+SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp) $(wildcard gameObjects/objects2D/*.cpp) $(wildcard gameObjects/colliders/*.cpp) $(wildcard gameObjects/menuItems/*.cpp)
+HEADERS=$(wildcard headers/*.hpp) $(wildcard window/headers/*.hpp) $(wildcard gameObjects/headers/*.hpp) $(wildcard gameObjects/headers/objects2D/*.cpp) $(wildcard gameObjects/headers/colliders/*.hpp) $(wildcard gameObjects/headers/menuItems/*.hpp)
 #OBJ=$(pathsubst %.cpp, %.o, $(SOURCE)) glad.o
 OBJ=$(SOURCE:.cpp=.o) glad.o
 
@@ -19,6 +19,9 @@ gameObjects/objects2D/%.o: gameObjects/objects2D/%.cpp gameObjects/headers/objec
 	$(CC) -fPIC -c -o $@ $< $(FLAGS)
 
 gameObjects/colliders/%.o: gameObjects/colliders/%.cpp gameObjects/headers/colliders/%.hpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+gameObjects/colliders/%.o: gameObjects/menuItems/%.cpp gameObjects/headers/menuItems/%.hpp
 	$(CC) -fPIC -c -o $@ $< $(FLAGS)
 
 glad.o: glad.c

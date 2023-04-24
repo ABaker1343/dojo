@@ -119,9 +119,15 @@ int main() {
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
     obj2->setPos(obj2->getPos() + glm::vec3(0, 0, -1));
 
+    dojo::Texture* tex = new dojo::Texture(glm::ivec2(500));
+    renderer->drawToTexture(tex, "string", 0, 0 ,1);
+    //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
+    dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), obj1->getTexture());
+    
+
     //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");
     //renderer->setShader("2DStatic");
-
+    
     std::cout << "created game object" << std::endl;
 
     bool running = true;
@@ -137,6 +143,8 @@ int main() {
         renderer->draw(cam, obj2);
         renderer->setShader("2DAnimated");
         renderer->draw(cam, obj1);
+        renderer->setShader("menuShader");
+        renderer->draw(menuItem);
         w->flipBuffers();
         w->pollEvents();
         if (w->KEYS[GLFW_KEY_ESCAPE]) {
@@ -158,6 +166,7 @@ int main() {
     delete obj1;
     std::cout << "deleting object 2 static" << std::endl;
     delete obj2;
+    delete menuItem;
     std::cout << "deleting boxes" << std::endl;
     delete box1;
     delete box2;
