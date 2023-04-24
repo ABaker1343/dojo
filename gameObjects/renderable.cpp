@@ -6,10 +6,6 @@ Renderable::Renderable() {
     // empty constructor
 }
 
-Renderable::~Renderable() {
-
-}
-
 void Renderable::createBuffers() {
 
 }

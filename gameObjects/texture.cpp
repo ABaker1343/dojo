@@ -47,6 +47,9 @@ namespace dojo {
     }
 
     Texture::Texture(glm::ivec2 _size) {
+        m_Width = _size.x;
+        m_Height = _size.y;
+
         // set the wrap parameters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -61,7 +64,7 @@ namespace dojo {
         glBindTexture(GL_TEXTURE_2D, m_Handle);
         //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _size.x, _size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glGenerateMipmap(GL_TEXTURE_2D);
 
     }

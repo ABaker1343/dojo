@@ -12,7 +12,7 @@ namespace dojo {
 class Renderable {
     public:
         Renderable();
-        ~Renderable();
+        virtual ~Renderable() {};
         
         unsigned int getVertexBuffer();
         unsigned int getVertexBufferSize();

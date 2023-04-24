@@ -75,7 +75,7 @@ class Renderer {
         void setUniformIVec2(const char* _name, glm::vec2 _value);
         void setUniformInt(const char* _name, int _value);
 
-        void genTextureFramebuffer();
+        void makeTextureRenderDependancies();
         void initFreetype();
 
         

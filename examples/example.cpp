@@ -122,7 +122,7 @@ int main() {
     dojo::Texture* tex = new dojo::Texture(glm::ivec2(500));
     renderer->drawToTexture(tex, "string", 0, 0 ,1);
     //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
-    dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), obj1->getTexture());
+    dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
     
 
     //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");
@@ -166,6 +166,7 @@ int main() {
     delete obj1;
     std::cout << "deleting object 2 static" << std::endl;
     delete obj2;
+    std::cout << "deleting menu item" << std::endl;
     delete menuItem;
     std::cout << "deleting boxes" << std::endl;
     delete box1;

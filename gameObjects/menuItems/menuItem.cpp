@@ -11,8 +11,8 @@ MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _display
 };
 
 MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale, Texture* _texture) {
-    createBuffers();
     m_texture = _texture;
+    createBuffers();
 }
 
 MenuItem::~MenuItem() {

@@ -23,7 +23,7 @@ Renderer::Renderer(Window* _window, glm::vec2 _VPPos, glm::vec2 _VPSize) {
     initFreetype();
 
     // generate framebuffers
-    genTextureFramebuffer();
+    makeTextureRenderDependancies();
     
 }
 
@@ -97,23 +97,22 @@ void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float 
     glBindFramebuffer(GL_FRAMEBUFFER, m_textureFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getHandle(), 0);
 
-    GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
-    glDrawBuffers(1, buffers);
+    //GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+    //glDrawBuffers(1, buffers);
     
-    //glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         throw std::runtime_error("incomplete framebuffer when rendering to texture");
     }
 
+    std::cout << textureSize.x << std::endl;
     glViewport(0, 0, textureSize.x, textureSize.y);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     unsigned int prev_shader = m_CurrentShader;
 
     drawMenuText(_text, _x, _y, _scale);
-
-    int static b = 0;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
@@ -122,13 +121,13 @@ void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float 
 
 void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float _scale) {
     setShader("textShader");
-    setUniformVec3("in_color", glm::vec3(1.0));
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(m_textVertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
 
     auto projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
     setUniformMat4("in_projection", projection);
+    setUniformVec3("in_color", glm::vec3(1.0));
 
     std::string::const_iterator it;
 
@@ -143,9 +142,6 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
 
         std::cout << *it << std::endl;
 
-        xpos = 0; ypos = 0;
-        h = 1; w = 1;
-
         // update VBO for each character
         /*float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },            
@@ -156,14 +152,19 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
             { xpos + w, ypos,       1.0f, 1.0f },
             { xpos + w, ypos + h,   1.0f, 0.0f }           
         };*/
-        float vertices[6][4] = {
-            { 0.0,      0.0,   0.0f, 0.0f },            
-            { 0.0,     1.0,       0.0f, 1.0f },
-            { 1.0 , 1.0,       1.0f, 1.0f },
-
-            { 1.0,     1.0,   0.0f, 0.0f },
-            { 1.0, 0.0,       1.0f, 1.0f },
-            { 0.0 , 1.0 ,   1.0f, 0.0f }           
+        float vertices[24] = {
+            0.0, 0.0,
+            0.0, 0.0,
+            0.0, 1.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 1.0,
+            1.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0,
+            1.0, 0.0,
+            0.0, 0.0,
+            0.0, 0.0,
         };
 
         glBindTexture(GL_TEXTURE_2D, c.textureHandle);
@@ -213,7 +214,7 @@ void Renderer::loadShaders() {
 
     for (const std::string& shader : shaderNames) {
         // load the shader
-        std::string vertSource = FileHandler::loadShaderCode("../shaders/" + shader + ".vert.glsl");
+        std::string vertSource = FileHandler::loadShaderCode(m_ShaderPath + shader + ".vert.glsl");
         std::string fragSource = FileHandler::loadShaderCode(m_ShaderPath + shader + ".frag.glsl");
 
         unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -264,9 +265,8 @@ void Renderer::loadShaders() {
     setShader("default");
 }
 
-void Renderer::genTextureFramebuffer() {
+void Renderer::makeTextureRenderDependancies() {
     glGenFramebuffers(1, &m_textureFramebuffer);
-    glGenRenderbuffers(1, &m_textureRenderbuffer);
 }
 
 void Renderer::initFreetype() {
