@@ -119,10 +119,10 @@ int main() {
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
     obj2->setPos(obj2->getPos() + glm::vec3(0, 0, -1));
 
-    dojo::Texture* tex = new dojo::Texture(glm::ivec2(500));
-    renderer->drawToTexture(tex, "string", 0, 0 ,1);
+    dojo::Texture* tex = new dojo::Texture(glm::ivec2(1800, 720));
+    renderer->drawToTexture(tex, "long string for a menu", 0, 0 ,1);
     //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
-    dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
+    dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), tex);
     
 
     //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");

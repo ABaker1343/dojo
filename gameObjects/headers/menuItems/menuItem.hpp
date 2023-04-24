@@ -15,13 +15,20 @@ class MenuItem : public Renderable {
         MenuItem(glm::vec2 _pos, glm::vec2 _scale, Texture* _texture);
         ~MenuItem();
 
+        void setPos(glm::vec2 _pos);
+        void setScale(glm::vec2 _scale);
+
         Texture* getTexture();
         unsigned int getVertexArray();
+        glm::vec4 getLocation();
 
     private:
         
         static unsigned int m_staticVertexArray;
         static unsigned int m_staticVertexBuffer;
+
+        glm::vec2 m_pos;
+        glm::vec2 m_scale;
 
         Texture* m_texture;
         

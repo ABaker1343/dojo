@@ -8,15 +8,27 @@ unsigned int MenuItem::m_staticVertexBuffer = 0;
 
 MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _displayText) {
     m_texture = new Texture(glm::ivec2(500, 500));
+    m_pos = _pos;
+    m_scale = _scale;
 };
 
 MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale, Texture* _texture) {
     m_texture = _texture;
     createBuffers();
+    m_pos = _pos;
+    m_scale = _scale;
 }
 
 MenuItem::~MenuItem() {
     delete m_texture;
+}
+
+void MenuItem::setPos(glm::vec2 _pos) {
+    m_pos = _pos;
+}
+
+void MenuItem::setScale(glm::vec2 _scale) {
+    m_scale = _scale;
 }
 
 void MenuItem::createBuffers() {
@@ -51,6 +63,10 @@ Texture* MenuItem::getTexture() {
 
 unsigned int MenuItem::getVertexArray() {
     return m_staticVertexArray;
+}
+
+glm::vec4 MenuItem::getLocation() {
+    return glm::vec4(m_pos.x, m_pos.y, m_scale.x,  m_scale.y);
 }
 
 }

@@ -86,6 +86,7 @@ void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
 void Renderer::draw(MenuItem* _item) {
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     glBindTexture(GL_TEXTURE_2D, _item->getTexture()->getHandle());
+    setUniformVec4("in_location", _item->getLocation());
 
     glBindVertexArray(_item->getVertexArray());
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -115,21 +116,50 @@ void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float 
     drawMenuText(_text, _x, _y, _scale);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // regenerate the mipmaps
+    glBindTexture(GL_TEXTURE_2D, _texture->getHandle());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
     
     m_CurrentShader = prev_shader;
 }
 
 void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float _scale) {
+
+    std::string::const_iterator it;
+
+    glm::vec2 padding = glm::vec2(0.1, 0);
+
+    glm::vec2 totalTextSize = glm::vec2(0);
+    float maxyBearing = 0;
+
+    for (it = _text.begin(); it != _text.end(); it++) {
+        FontCharacter c = m_fontMapTerm[*it];
+        totalTextSize.x += (c.advance >> 6);
+        if (c.size.y > totalTextSize.y) {
+            totalTextSize.y = c.size.y;
+        }
+        if (c.bearing.y > maxyBearing) {
+            maxyBearing = c.bearing.y;
+        }
+    }
+    totalTextSize.x = totalTextSize.x * _scale;
+    totalTextSize.y = totalTextSize.y * _scale + (maxyBearing/2);
+    glm::vec2 absPadding = totalTextSize * padding;
+    
+    glm::mat4 projection = glm::ortho(-absPadding.x, totalTextSize.x + absPadding.x, -maxyBearing/2, totalTextSize.y);
+    //float size = totalTextSize.x > totalTextSize.y ? totalTextSize.x : totalTextSize.y;
+    //glm::mat4 projection = glm::ortho(0.f, size, -size / 4, size / 4);
+
     setShader("textShader");
-    //glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(m_textVertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
 
-    auto projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
     setUniformMat4("in_projection", projection);
     setUniformVec3("in_color", glm::vec3(1.0));
-
-    std::string::const_iterator it;
 
     for (it = _text.begin(); it != _text.end(); it++) {
         FontCharacter c = m_fontMapTerm[*it];
@@ -152,20 +182,6 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
             { xpos + w, ypos,       1.0f, 1.0f },
             { xpos + w, ypos + h,   1.0f, 0.0f }           
         };
-        /*float vertices[24] = {
-            0.0, 0.0,
-            0.0, 0.0,
-            0.0, 1.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 1.0,
-            1.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0,
-            1.0, 0.0,
-            0.0, 0.0,
-            0.0, 0.0,
-        };*/
 
         glBindTexture(GL_TEXTURE_2D, c.textureHandle);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
@@ -174,11 +190,17 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
         _x += (c.advance >> 6) * _scale;
     }
     glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Renderer::setUniformMat4(const char* _name, glm::mat4 _value) {
     unsigned int loc = glGetUniformLocation(m_CurrentShader, _name);
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(_value));
+}
+
+void Renderer::setUniformVec4(const char* _name, glm::vec4 _value) {
+    unsigned int loc = glGetUniformLocation(m_CurrentShader, _name);
+    glUniform4fv(loc, 1, glm::value_ptr(_value));
 }
 
 void Renderer::setUniformVec3(const char* _name, glm::vec3 _value) {
@@ -278,7 +300,7 @@ void Renderer::initFreetype() {
     if (FT_New_Face(ft, "fonts/term.ttf", 0, &face)) {
         throw std::runtime_error("failed to load font");
     }
-    FT_Set_Pixel_Sizes(face, 0, 48);
+    FT_Set_Pixel_Sizes(face, 0, 512);
 
     m_fontMapTerm = std::map<char, FontCharacter>();
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //disable byte alignment restriction

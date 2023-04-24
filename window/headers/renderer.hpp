@@ -71,6 +71,7 @@ class Renderer {
         void drawMenuText(const std::string& _text, float _x, float _y, float _scale);
 
         void setUniformMat4(const char* _name, glm::mat4 _value);
+        void setUniformVec4(const char* _name, glm::vec4 _value);
         void setUniformVec3(const char* _name, glm::vec3 _value);
         void setUniformIVec2(const char* _name, glm::vec2 _value);
         void setUniformInt(const char* _name, int _value);
