@@ -121,7 +121,7 @@ void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float 
 
 void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float _scale) {
     setShader("textShader");
-    glActiveTexture(GL_TEXTURE0);
+    //glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(m_textVertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
 
@@ -143,7 +143,7 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
         std::cout << *it << std::endl;
 
         // update VBO for each character
-        /*float vertices[6][4] = {
+        float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },            
             { xpos,     ypos,       0.0f, 1.0f },
             { xpos + w, ypos,       1.0f, 1.0f },
@@ -151,21 +151,21 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
             { xpos,     ypos + h,   0.0f, 0.0f },
             { xpos + w, ypos,       1.0f, 1.0f },
             { xpos + w, ypos + h,   1.0f, 0.0f }           
-        };*/
-        float vertices[24] = {
-            0.0, 0.0,
-            0.0, 0.0,
-            0.0, 1.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 1.0,
-            1.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0,
-            1.0, 0.0,
-            0.0, 0.0,
-            0.0, 0.0,
         };
+        /*float vertices[24] = {
+            0.0, 0.0,
+            0.0, 0.0,
+            0.0, 1.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 1.0,
+            1.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0,
+            1.0, 0.0,
+            0.0, 0.0,
+            0.0, 0.0,
+        };*/
 
         glBindTexture(GL_TEXTURE_2D, c.textureHandle);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
@@ -275,7 +275,7 @@ void Renderer::initFreetype() {
         throw std::runtime_error("failed to load freetype library");
     }
     FT_Face face;
-    if (FT_New_Face(ft, "./fonts/Hack-Regular.ttf", 0, &face)) {
+    if (FT_New_Face(ft, "fonts/term.ttf", 0, &face)) {
         throw std::runtime_error("failed to load font");
     }
     FT_Set_Pixel_Sizes(face, 0, 48);
@@ -291,6 +291,7 @@ void Renderer::initFreetype() {
         unsigned int texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
+
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED,
                 face->glyph->bitmap.width, face->glyph->bitmap.rows,
                 0, GL_RED, GL_UNSIGNED_BYTE,
@@ -302,11 +303,12 @@ void Renderer::initFreetype() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+
         FontCharacter character = {
             texture,
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-            face->glyph->advance.x,
+            static_cast<unsigned int>(face->glyph->advance.x),
         };
         
         m_fontMapTerm[c] = character;
