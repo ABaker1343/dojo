@@ -149,7 +149,7 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
     totalTextSize.y = totalTextSize.y * _scale + (maxyBearing/2);
     glm::vec2 absPadding = totalTextSize * padding;
     
-    glm::mat4 projection = glm::ortho(-absPadding.x, totalTextSize.x + absPadding.x, -maxyBearing/2, totalTextSize.y);
+    glm::mat4 projection = glm::ortho(-absPadding.x, totalTextSize.x + absPadding.x, -maxyBearing/2 -absPadding.y, totalTextSize.y + absPadding.y);
     //float size = totalTextSize.x > totalTextSize.y ? totalTextSize.x : totalTextSize.y;
     //glm::mat4 projection = glm::ortho(0.f, size, -size / 4, size / 4);
 
