@@ -78,14 +78,6 @@ int main() {
     std::string title = "new window";
     dojo::Window *w = new dojo::Window(1280, 720, title);
 
-    /*w->setCustomKeyCallback([w] (int _key, int _scancode, int _action, int _mode) -> void {
-            if (_action == GLFW_PRESS) {
-                w->KEYS[_key] = true;
-            }
-            if (_action == GLFW_RELEASE) {
-                w->KEYS[_key] = false;
-            }
-        });*/
     w->useDefaultKeyCallback(true);
 
     std::cout << "created window" << std::endl;

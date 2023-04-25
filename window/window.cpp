@@ -82,17 +82,79 @@ void Window::setWindowCallbacks() {
     glfwSetFramebufferSizeCallback(m_Window, windowResizeCallback);
 }
 
-void Window::setCustomKeyCallback(KeyCallback _callback) {
-    m_keyCallbacks.push_back(_callback);
+unsigned int Window::setCustomKeyCallback(KeyCallbackFunction _callback) {
+    KeyCallback newCallback = KeyCallback {
+        genNewCallbackID(),
+        _callback
+    };
+    m_keyCallbacks.push_back(newCallback);
+    return newCallback.ID;
 }
-void Window::setCustomMouseCallback(MouseCallback _callback) {
-    m_mouseCallbacks.push_back(_callback);
+unsigned int Window::setCustomMouseCallback(MouseCallbackFunction _callback) {
+    MouseCallback newCallback = {
+        genNewCallbackID(),
+        _callback
+    };
+    m_mouseCallbacks.push_back(newCallback);
+    return newCallback.ID;
 }
-void Window::setCustomCursorPosCallback(CursorPosCallback _callback) {
-    m_cursorPosCallbacks.push_back(_callback);
+unsigned int Window::setCustomCursorPosCallback(CursorPosCallbackFunction _callback) {
+    CursorPosCallback newCallback = {
+        genNewCallbackID(),
+        _callback
+    };
+    m_cursorPosCallbacks.push_back(newCallback);
+    return newCallback.ID;
 }
-void Window::setCustomResizeCallback(ResizeCallback _callback) {
-    m_resizeCallbacks.push_back(_callback);
+unsigned int Window::setCustomResizeCallback(ResizeCallbackFunction _callback) {
+    ResizeCallback newCallback = {
+        genNewCallbackID(),
+        _callback
+    };
+    m_resizeCallbacks.push_back(newCallback);
+    return newCallback.ID;
+}
+
+void Window::removeKeyCallback(unsigned int _callbackID) {
+    std::vector<KeyCallback>::iterator it;
+    for (it = m_keyCallbacks.begin(); it != m_keyCallbacks.end(); it++) {
+        if (it->ID == _callbackID) {
+            m_keyCallbacks.erase(it);
+            break;
+        }
+    }
+}
+void Window::removeMouseCallback(unsigned int _callbackID) {
+    std::vector<MouseCallback>::iterator it;
+    for (it = m_mouseCallbacks.begin(); it != m_mouseCallbacks.end(); it++) {
+        if (it->ID == _callbackID) {
+            m_mouseCallbacks.erase(it);
+            break;
+        }
+    }
+}
+void Window::removeCursorPosCallback(unsigned int _callbackID) {
+    std::vector<CursorPosCallback>::iterator it;
+    for (it = m_cursorPosCallbacks.begin(); it != m_cursorPosCallbacks.end(); it++) {
+        if (it->ID == _callbackID) {
+            m_cursorPosCallbacks.erase(it);
+            break;
+        }
+    }
+}
+void Window::removeResizeCallback(unsigned int _callbackID) {
+    std::vector<ResizeCallback>::iterator it;
+    for (it = m_resizeCallbacks.begin(); it != m_resizeCallbacks.end(); it++) {
+        if (it->ID == _callbackID) {
+            m_resizeCallbacks.erase(it);
+            break;
+        }
+    }
+}
+
+unsigned int Window::genNewCallbackID() {
+    static unsigned int lastID;
+    return lastID++;
 }
 
 void Window::useDefaultKeyCallback(bool _use) {
@@ -124,7 +186,7 @@ void Window::windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int
     
 
     for (unsigned int i = 0; i < m_keyCallbacks.size(); i++){
-        m_keyCallbacks[i](_key, _scancode, _action, _mods);
+        m_keyCallbacks[i].function(_key, _scancode, _action, _mods);
     }
 }
 
@@ -140,7 +202,7 @@ void Window::windowMouseCallback(GLFWwindow *_window, int _button, int _action, 
     }
 
     for (unsigned int i = 0; i < m_mouseCallbacks.size(); i++) {
-        m_mouseCallbacks[i](_button, _action, _mods);
+        m_mouseCallbacks[i].function(_button, _action, _mods);
     }
 }
 
@@ -151,7 +213,7 @@ void Window::windowCursorPosCallback(GLFWwindow *_window, double _xpos, double _
     }
 
     for (unsigned int i = 0; i < m_cursorPosCallbacks.size(); i++) {
-        m_cursorPosCallbacks[i](_xpos, _ypos);
+        m_cursorPosCallbacks[i].function(_xpos, _ypos);
     }
 }
 
@@ -161,7 +223,7 @@ void Window::windowResizeCallback(GLFWwindow* _window, int _width, int _height) 
     }
 
     for (unsigned int i = 0; i < m_resizeCallbacks.size(); i++) {
-        m_resizeCallbacks[i](_width, _height);
+        m_resizeCallbacks[i].function(_width, _height);
     }
 }
 

@@ -11,17 +11,34 @@
 #include <functional>
 #include <iostream>
 #include <algorithm>
+#include <optional>
 
 namespace dojo {
 
 class Window;
 class Renderer;
 
-//typedef void(*keyCallback) (int _key, int _scancode, int _action, int _mode);
-typedef std::function<void(int, int, int, int)> KeyCallback;
-typedef std::function<void(int, int, int)> MouseCallback;
-typedef std::function<void(double, double)> CursorPosCallback;
-typedef std::function<void(int, int)> ResizeCallback;
+typedef std::function<void(int, int, int, int)> KeyCallbackFunction;
+typedef std::function<void(int, int, int)> MouseCallbackFunction;
+typedef std::function<void(double, double)> CursorPosCallbackFunction;
+typedef std::function<void(int, int)> ResizeCallbackFunction;
+
+typedef struct {
+    unsigned int ID;
+    KeyCallbackFunction function;
+} KeyCallback;
+typedef struct {
+    unsigned int ID;
+    MouseCallbackFunction function;
+} MouseCallback;
+typedef struct {
+    unsigned int ID;
+    CursorPosCallbackFunction function;
+} CursorPosCallback;
+typedef struct {
+    unsigned int ID;
+    ResizeCallbackFunction function;
+} ResizeCallback;
 
 class Window {
     public:
@@ -32,16 +49,20 @@ class Window {
         void pollEvents();
 
         void useDefaultKeyCallback(bool _use);
-        void setCustomKeyCallback(KeyCallback _callback);
+        unsigned int setCustomKeyCallback(KeyCallbackFunction _callback);
+        void removeKeyCallback(unsigned int _callbackID);
 
         void useDefaultMouseCallback(bool _use);
-        void setCustomMouseCallback(MouseCallback _callback);
+        unsigned int setCustomMouseCallback(MouseCallbackFunction _callback);
+        void removeMouseCallback(unsigned int _callbackID);
 
         void useDefaultCursorPosCallback(bool _use);
-        void setCustomCursorPosCallback(CursorPosCallback _callback);
+        unsigned int setCustomCursorPosCallback(CursorPosCallbackFunction _callback);
+        void removeCursorPosCallback(unsigned int _callbackID);
 
         void useDefaultResizeCallback(bool _use);
-        void setCustomResizeCallback(ResizeCallback _callback);
+        unsigned int setCustomResizeCallback(ResizeCallbackFunction _callback);
+        void removeResizeCallback(unsigned int _callbackID);
 
         glm::vec2 getDimensions();
         glm::vec2 getMousePos();
@@ -62,6 +83,7 @@ class Window {
         static bool m_usingDefaultCursorCallback;
         static bool m_usingDefaultResizeCallback;
 
+        static unsigned int genNewCallbackID();
         static void windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods);
         static void windowResizeCallback(GLFWwindow* _window, int _width, int _height);
         static void windowMouseCallback(GLFWwindow* _window, int _button, int _action, int _mods);
