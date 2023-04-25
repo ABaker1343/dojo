@@ -48,6 +48,8 @@ class Renderer {
         void loadShaders();
         void resize();
 
+        Window* getWindow();
+
 
     private:
 

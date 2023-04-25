@@ -35,6 +35,10 @@ Renderer::~Renderer() {
     }
 }
 
+Window* Renderer::getWindow() {
+    return m_Window;
+}
+
 void Renderer::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -107,7 +111,6 @@ void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float 
         throw std::runtime_error("incomplete framebuffer when rendering to texture");
     }
 
-    std::cout << textureSize.x << std::endl;
     glViewport(0, 0, textureSize.x, textureSize.y);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -169,8 +172,6 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
 
         float w = c.size.x * _scale;
         float h = c.size.y * _scale;
-
-        std::cout << *it << std::endl;
 
         // update VBO for each character
         float vertices[6][4] = {

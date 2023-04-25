@@ -235,6 +235,10 @@ void Window::pollEvents() {
     glfwPollEvents();
 }
 
+glm::vec2 Window::getMousePos() {
+    return m_MousePos;
+}
+
 glm::vec2 Window::getDimensions() {
     int width, height;
     glfwGetWindowSize(m_Window, &width, &height);

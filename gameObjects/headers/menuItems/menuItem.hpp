@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <iostream>
 
 #include "../../headers/texture.hpp"
 #include "../../../gameObjects/headers/renderable.hpp"
