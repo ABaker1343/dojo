@@ -15,6 +15,8 @@ class MenuItem : public Renderable {
         MenuItem(glm::vec2 _pos, glm::vec2 _scale, Texture* _texture);
         ~MenuItem();
 
+        bool isMouseOver(glm::vec2 _windowSize, glm::vec2 _mousePos);
+
         void setPos(glm::vec2 _pos);
         void setScale(glm::vec2 _scale);
 

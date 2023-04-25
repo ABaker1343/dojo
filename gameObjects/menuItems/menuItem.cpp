@@ -23,6 +23,15 @@ MenuItem::~MenuItem() {
     delete m_texture;
 }
 
+bool MenuItem::isMouseOver(glm::vec2 _windowSize, glm::vec2 _mousePos) {
+    glm::vec2 relativePos = _mousePos / _windowSize;
+    if (relativePos.x > m_pos.x && relativePos.x < m_pos.x + m_scale.x &&
+            relativePos.y > m_pos.y && relativePos.y < m_pos.y + m_scale.y) {
+        return true;
+    }
+    return false;
+}
+
 void MenuItem::setPos(glm::vec2 _pos) {
     m_pos = _pos;
 }

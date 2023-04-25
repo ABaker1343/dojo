@@ -16,7 +16,7 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object) {
     auto timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(thisUpdateTime - lastUpdateTime).count();
     auto animationTimePassed = std::chrono::duration_cast<std::chrono::milliseconds>(thisUpdateTime - lastAnimationTime).count();
     
-    float movementSpeed = 3 * (timePassed / 1000.f); // seconds
+    float movementSpeed = 5 * (timePassed / 1000.f); // seconds
     float animationSpeed = 1000.f / 5.f; // frames per seconds
 
     if (_window->KEYS[GLFW_KEY_D]) {
@@ -116,8 +116,8 @@ int main() {
 
     dojo::GameObject2DStatic *obj2 = new dojo::GameObject2DStatic("stick_man.png");
     obj2->setScale(glm::vec3(0.75));
+    obj2->setPos(10, -5, 0);
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
-    obj2->setPos(obj2->getPos() + glm::vec3(0, 0, -1));
 
     dojo::Texture* tex = new dojo::Texture(glm::ivec2(1800, 720));
     renderer->drawToTexture(tex, "long string for a menu", 0, 0 ,1);
@@ -149,6 +149,13 @@ int main() {
         w->pollEvents();
         if (w->KEYS[GLFW_KEY_ESCAPE]) {
             running = false;
+        }
+
+        box1->setCenter(obj1->getPos());
+
+        if (box1->isColliding(box2)) {
+            std::cout << "collidong" << std::endl;
+            box2->snapToSide(obj1, dojo::BoxCollider::Side::LEFT);
         }
 
         HandleInputs(w, obj1);
