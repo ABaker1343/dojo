@@ -1,5 +1,5 @@
 #include "headers/window.hpp"
-#include <GLFW/glfw3.h>
+#include "../glfw/include/GLFW/glfw3.h"
 
 namespace dojo {
 

@@ -1,7 +1,7 @@
 #ifndef __HEADER_WINDOW
 #define __HEADER_WINDOW
 
-#include <glad/glad.h>
+#include "../../headers/glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
