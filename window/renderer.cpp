@@ -10,7 +10,8 @@ Renderer::Renderer(Window* _window, glm::vec2 _VPPos, glm::vec2 _VPSize) {
 
     m_VPScale = _VPSize;
     m_VPPos = _VPPos;
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    m_clearColor = glm::vec4(0.0, 0.0, 0.0, 1.0); // black
+    glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.w);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -95,7 +96,7 @@ void Renderer::draw(MenuItem* _item) {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float _x, float _y, float _scale) {
+void Renderer::textToTexture(Texture* _texture, const std::string& _text, glm::vec3 _textColor, glm::vec3 _backgroundColor) {
     glm::ivec2 textureSize = _texture->getSize();
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_textureFramebuffer);
@@ -111,11 +112,12 @@ void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float 
     }
 
     glViewport(0, 0, textureSize.x, textureSize.y);
+    glClearColor(_backgroundColor.x, _backgroundColor.y, _backgroundColor.x, _backgroundColor.y);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     unsigned int prev_shader = m_CurrentShader;
 
-    drawMenuText(_text, _x, _y, _scale);
+    drawMenuText(_text, 0, 0, 1, _textColor);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -126,9 +128,10 @@ void Renderer::drawToTexture(Texture* _texture, const std::string& _text, float 
     glGenerateMipmap(GL_TEXTURE_2D);
     
     m_CurrentShader = prev_shader;
+    glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.w);
 }
 
-void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float _scale) {
+void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float _scale, glm::vec3 _textColor) {
 
     std::string::const_iterator it;
 
@@ -152,8 +155,6 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
     glm::vec2 absPadding = totalTextSize * padding;
     
     glm::mat4 projection = glm::ortho(-absPadding.x, totalTextSize.x + absPadding.x, -maxyBearing/2 -absPadding.y, totalTextSize.y + absPadding.y);
-    //float size = totalTextSize.x > totalTextSize.y ? totalTextSize.x : totalTextSize.y;
-    //glm::mat4 projection = glm::ortho(0.f, size, -size / 4, size / 4);
 
     setShader("textShader");
     glActiveTexture(GL_TEXTURE0);
@@ -161,7 +162,7 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
     glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
 
     setUniformMat4("in_projection", projection);
-    setUniformVec3("in_color", glm::vec3(1.0));
+    setUniformVec3("in_color", _textColor);
 
     for (it = _text.begin(); it != _text.end(); it++) {
         FontCharacter c = m_fontMapTerm[*it];

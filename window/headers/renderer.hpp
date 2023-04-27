@@ -40,7 +40,7 @@ class Renderer {
         void draw(Camera* _camera, GameObject2DAnimated* _object);
         void draw(MenuItem* _item);
 
-        void drawToTexture(Texture* _texture, const std::string& _text, float _x, float _y, float _scale);
+        void textToTexture(Texture* _texture, const std::string& _text, glm::vec3 _textColor, glm::vec3 _backgroundColor = glm::vec3(0.5));
 
         void clear();
         void setShader(const std::string& _shader);
@@ -60,6 +60,8 @@ class Renderer {
         glm::vec3 m_VPAbsScale;
         glm::vec2 m_VPScale;
         glm::vec2 m_VPPos;
+        
+        glm::vec4 m_clearColor;
 
         unsigned int m_textureFramebuffer;
         unsigned int m_textureRenderbuffer;
@@ -70,7 +72,7 @@ class Renderer {
         std::map<std::string, unsigned int> m_Shaders;
         std::map<char, FontCharacter> m_fontMapTerm;
 
-        void drawMenuText(const std::string& _text, float _x, float _y, float _scale);
+        void drawMenuText(const std::string& _text, float _x, float _y, float _scale, glm::vec3 _textColor);
 
         void setUniformMat4(const char* _name, glm::mat4 _value);
         void setUniformVec4(const char* _name, glm::vec4 _value);
