@@ -1,0 +1,46 @@
+CC=g++ --std=c++20
+
+GLFW_PATH=C:\libs\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64
+GLM_PATH=C:\libs\glm-0.9.8.5\glm
+FREETYPE_PATH=C:\libs\ft2130\freetype-2.13.0
+FREETYPE_DLL=D:\freetype
+
+FLAGS=-Wall -L$(FREETYPE_DLL) -L$(GLFW_PATH)\lib-mingw-w64 -lglfw3 -lgdi32 -lopengl32 -lfreetype -I$(GLFW_PATH)\include -I$(GLM_PATH) -I$(FREETYPE_PATH)\include
+
+SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp) $(wildcard gameObjects/objects2D/*.cpp) $(wildcard gameObjects/colliders/*.cpp) $(wildcard gameObjects/menuItems/*.cpp)
+
+HEADERS=$(wildcard headers/*.hpp) $(wildcard window/headers/*.hpp) $(wildcard gameObjects/headers/*.hpp) $(wildcard gameObjects/headers/objects2D/*.cpp) $(wildcard gameObjects/headers/colliders/*.hpp) $(wildcard gameObjects/headers/menuItems/*.hpp)
+
+OBJ=$(SOURCE:.cpp=.o) glad.o
+
+libdojo.dll: $(OBJ)
+	$(CC) --shared -o $@ $^ $(FLAGS)
+
+window/%.o: window/%.cpp window/headers/%.hpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+	
+gameObjects/%.o: gameObjects/%.cpp gameObjects/headers/%.hpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+gameObjects/objects2D/%.o: gameObjects/objects2D/%.cpp gameObjects/headers/objects2D/%.hpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+gameObjects/colliders/%.o: gameObjects/colliders/%.cpp gameObjects/headers/colliders/%.hpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+gameObjects/colliders/%.o: gameObjects/menuItems/%.cpp gameObjects/headers/menuItems/%.hpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+glad.o: glad.c
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+%.o: %.cpp
+	$(CC) -fPIC -c -o $@ $< $(FLAGS)
+
+clean:
+	rm $(OBJ)
+	rm libdojo.so
+
+printSource:
+	echo $(SOURCE)
+	echo $(OBJ)
