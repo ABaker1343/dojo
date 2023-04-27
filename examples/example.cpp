@@ -80,8 +80,6 @@ int main() {
 
     w->useDefaultKeyCallback(true);
 
-    std::cout << "created window" << std::endl;
-
     dojo::Renderer *renderer = new dojo::Renderer(w);
     renderer->setShaderPath("../shaders/");
     renderer->loadShaders();

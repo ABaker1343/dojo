@@ -1,7 +1,7 @@
 CC=g++ --std=c++20
 
 GLFW_PATH=C:\libs\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64
-GLM_PATH=C:\libs\glm-0.9.8.5\glm
+GLM_PATH=.\glm
 FREETYPE_PATH=C:\libs\ft2130\freetype-2.13.0
 FREETYPE_DLL=D:\freetype
 
