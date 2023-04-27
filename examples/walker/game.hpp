@@ -19,6 +19,7 @@ class Game {
         dojo::Camera* m_camera;
         dojo::GameObject2DStatic* m_background;
         dojo::GameObject2DStatic* m_background2;
+        dojo::MenuItem* m_gameOverText;
         bool m_running;
 
         void runMainLoop();

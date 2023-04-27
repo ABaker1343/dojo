@@ -17,6 +17,10 @@ Game::Game() {
     m_walker->m_object->setScale(glm::vec2(1.7));
     m_walker->m_object->setPos(glm::vec3(0, 0.9, 0));
 
+    dojo::Texture* gotexture = new dojo::Texture(glm::ivec2(1000, 200));
+    m_renderer->textToTexture(gotexture, "YOU DIED", glm::vec3(1.0, 0, 0), glm::vec4(0));
+    m_gameOverText = new dojo::MenuItem(glm::vec2(0.4, 0.45), glm::vec2(0.5, 0.1), gotexture);
+
     m_background = new dojo::GameObject2DStatic("Background.png");
     m_background->setScale(glm::vec2(15));
     m_background->setPos(glm::vec3(0, 11.5, -1));
@@ -30,6 +34,7 @@ Game::~Game() {
     delete m_menu;
     delete m_background;
     delete m_background2;
+    delete m_gameOverText;
     delete m_walker;
     delete m_camera;
     delete m_renderer;
@@ -88,7 +93,7 @@ void Game::runMainLoop() {
         
         if (m_walker->m_object->getPos().x > m_camera->getPosition().x + 3) {
             glm::vec3 curr = m_camera->getPosition();
-            glm::vec3 move = glm::vec3(movementSpeed * deltaTime,0, 0);
+            glm::vec3 move = glm::vec3(movementSpeed * deltaTime, 0, 0);
             m_camera->setPos(curr + move);
         }
         if (m_walker->m_object->getPos().x > m_background->getPos().x + m_background->getScale().x * 2) {
@@ -109,22 +114,33 @@ void Game::runMainLoop() {
     m_walker->m_object->resetAnimation();
 
     lastFrame = std::chrono::steady_clock::now();
+    lastAnimation = std::chrono::steady_clock::now();
+    auto startTime = std::chrono::steady_clock::now();
 
-    while (true) {
+    while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() < 4) {
         auto thisFrame = std::chrono::steady_clock::now();
         auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(thisFrame - lastFrame).count();
-        if (animationTime < deltaTime) {
-            if (!m_walker->m_object->nextFrame()) {
-                break;
-            }
-            lastFrame = std::chrono::steady_clock::now();
+        auto deltaAnimation = std::chrono::duration_cast<std::chrono::milliseconds>(thisFrame - lastAnimation).count();
+
+        if (animationTime < deltaAnimation) {
+            m_walker->m_object->nextFrame();
+            lastAnimation = std::chrono::steady_clock::now();
         }
+        if (!(m_camera->getPosition().y > m_background->getPos().y + m_background->getScale().y * 0.75) ) { 
+            glm::vec3 newPos = m_camera->getPosition() + glm::vec3(0, movementSpeed * deltaTime * 0.3, 0);
+            m_camera->setPos(newPos);
+        }
+
+        lastFrame = std::chrono::steady_clock::now();
+
         m_renderer->clear();
         m_renderer->setShader("2DStatic");
         m_renderer->draw(m_camera, m_background);
         m_renderer->draw(m_camera, m_background2);
         m_renderer->setShader("2DAnimated");
         m_renderer->draw(m_camera, m_walker->m_object);
+        m_renderer->setShader("menuShader");
+        m_renderer->draw(m_gameOverText);
         m_window->flipBuffers();
     }
 
