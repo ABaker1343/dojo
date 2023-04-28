@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "headers/fileHandler.hpp"
-#include "headers/stb_image.h"
+#include "../include/fileHandler.hpp"
+#include "../include/stb_image.h"
 
 namespace dojo {
 

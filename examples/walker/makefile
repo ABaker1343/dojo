@@ -1,5 +1,5 @@
 CC=g++ --std=c++20
-CFLAGS=-Wall -lGL -L../.. -ldojo -I. -Wl,-rpath=../.. $(shell pkg-config --cflags freetype2) -lfreetype
+CFLAGS=-Wall -lGL -L../../lib/ -ldojo -I. -Wl,-rpath=../../lib/ $(shell pkg-config --cflags freetype2) -lfreetype
 SOURCE=$(wildcard *.cpp)
 OBJ=$(SOURCE:.cpp=.o)
 

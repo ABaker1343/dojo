@@ -1,4 +1,4 @@
-#include "headers/camera.hpp"
+#include "../../include/gameObjects/camera.hpp"
 
 namespace dojo {
 

@@ -1,4 +1,4 @@
-#include "headers/renderer.hpp"
+#include "../../include/window/renderer.hpp"
 
 namespace dojo {
 

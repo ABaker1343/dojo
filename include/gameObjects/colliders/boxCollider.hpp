@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 
 #include "collider.hpp"
-#include "../../headers/gameObject.hpp"
-#include "../../headers/objects2D/gameObject2D.hpp"
+#include "../gameObject.hpp"
+#include "../objects2D/gameObject2D.hpp"
 
 namespace dojo {
 

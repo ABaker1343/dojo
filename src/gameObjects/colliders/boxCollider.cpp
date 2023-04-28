@@ -1,4 +1,4 @@
-#include "../headers/colliders/boxCollider.hpp"
+#include "../../../include/gameObjects/colliders/boxCollider.hpp"
 
 namespace dojo {
 

@@ -5,7 +5,7 @@
 Game::Game() {
     m_window = new dojo::Window(1280, 720, "Walker");
     m_renderer = new dojo::Renderer(m_window);
-    m_renderer->setShaderPath("../../shaders/");
+    m_renderer->setShaderPath("../../src/shaders/");
     m_renderer->loadShaders();
 
     m_camera = new dojo::Camera();
@@ -19,7 +19,7 @@ Game::Game() {
 
     dojo::Texture* gotexture = new dojo::Texture(glm::ivec2(1000, 200));
     m_renderer->textToTexture(gotexture, "YOU DIED", glm::vec3(1.0, 0, 0), glm::vec4(0));
-    m_gameOverText = new dojo::MenuItem(glm::vec2(0.4, 0.45), glm::vec2(0.5, 0.1), gotexture);
+    m_gameOverText = new dojo::MenuItem(glm::vec2(0.3, 0.55), glm::vec2(0.4, 0.1), gotexture);
 
     m_background = new dojo::GameObject2DStatic("Background.png");
     m_background->setScale(glm::vec2(15));

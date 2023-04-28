@@ -1,4 +1,4 @@
-#include "../../headers/dojo.hpp"
+#include "../../include/dojo.hpp"
 
 class Walker {
     public:

@@ -1,4 +1,4 @@
-#include "../headers/dojo.hpp"
+#include "../include/dojo.hpp"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -81,7 +81,7 @@ int main() {
     w->useDefaultKeyCallback(true);
 
     dojo::Renderer *renderer = new dojo::Renderer(w);
-    renderer->setShaderPath("../shaders/");
+    renderer->setShaderPath("../src/shaders/");
     renderer->loadShaders();
 
     w->setCustomResizeCallback([renderer](int _width, int _height) {

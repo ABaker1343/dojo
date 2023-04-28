@@ -5,8 +5,8 @@
 #include <vector>
 #include <iostream>
 
-#include "../../headers/texture.hpp"
-#include "../../../gameObjects/headers/renderable.hpp"
+#include "../texture.hpp"
+#include "../renderable.hpp"
 
 namespace dojo {
 

@@ -1,30 +1,20 @@
 CC=g++ --std=c++20
 FLAGS=-Wall -lGL -lglfw $(shell pkg-config --cflags freetype2)
 
-SOURCE=$(wildcard *.cpp) $(wildcard window/*.cpp) $(wildcard gameObjects/*.cpp) $(wildcard gameObjects/objects2D/*.cpp) $(wildcard gameObjects/colliders/*.cpp) $(wildcard gameObjects/menuItems/*.cpp)
-HEADERS=$(wildcard headers/*.hpp) $(wildcard window/headers/*.hpp) $(wildcard gameObjects/headers/*.hpp) $(wildcard gameObjects/headers/objects2D/*.cpp) $(wildcard gameObjects/headers/colliders/*.hpp) $(wildcard gameObjects/headers/menuItems/*.hpp)
-#OBJ=$(pathsubst %.cpp, %.o, $(SOURCE)) glad.o
-OBJ=$(SOURCE:.cpp=.o) glad.o
+SOURCE=$(wildcard src/*.cpp) $(wildcard src/window/*.cpp) $(wildcard src/gameObjects/*.cpp) $(wildcard src/gameObjects/objects2D/*.cpp) $(wildcard src/gameObjects/colliders/*.cpp) $(wildcard src/gameObjects/menuItems/*.cpp)
 
-libdojo.so: $(OBJ)
+#HEADERS=$(wildcard headers/*.hpp) $(wildcard window/headers/*.hpp) $(wildcard gameObjects/headers/*.hpp) $(wildcard gameObjects/headers/objects2D/*.cpp) $(wildcard gameObjects/headers/colliders/*.hpp) $(wildcard gameObjects/headers/menuItems/*.hpp)
+
+HEADERS=$(pathsubst src/%, include/%, $(SOURCE))
+HEADERS=$(pathsubst %.cpp, %.hpp, $(HEADERS))
+
+#OBJ=$(pathsubst %.cpp, %.o, $(SOURCE)) glad.o
+OBJ=$(SOURCE:.cpp=.o) src/glad.o
+
+lib/libdojo.so: $(OBJ)
 	$(CC) --shared -o $@ $^ $(FLAGS)
 
-window/%.o: window/%.cpp window/headers/%.hpp
-	$(CC) -fPIC -c -o $@ $< $(FLAGS)
-	
-gameObjects/%.o: gameObjects/%.cpp gameObjects/headers/%.hpp
-	$(CC) -fPIC -c -o $@ $< $(FLAGS)
-
-gameObjects/objects2D/%.o: gameObjects/objects2D/%.cpp gameObjects/headers/objects2D/%.hpp
-	$(CC) -fPIC -c -o $@ $< $(FLAGS)
-
-gameObjects/colliders/%.o: gameObjects/colliders/%.cpp gameObjects/headers/colliders/%.hpp
-	$(CC) -fPIC -c -o $@ $< $(FLAGS)
-
-gameObjects/colliders/%.o: gameObjects/menuItems/%.cpp gameObjects/headers/menuItems/%.hpp
-	$(CC) -fPIC -c -o $@ $< $(FLAGS)
-
-glad.o: glad.c
+src/glad.o: src/glad.c
 	$(CC) -fPIC -c -o $@ $< $(FLAGS)
 
 %.o: %.cpp
@@ -32,7 +22,7 @@ glad.o: glad.c
 
 clean:
 	rm $(OBJ)
-	rm libdojo.so
+	rm lib/libdojo.so
 
 printSource:
 	echo $(SOURCE)

@@ -6,7 +6,7 @@
 #include <exception>
 #include <map>
 
-#include "../../headers/glad/glad.h"
+#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -14,12 +14,12 @@
 #include FT_FREETYPE_H
 
 #include "window.hpp"
-#include "../../gameObjects/headers/camera.hpp"
-#include "../../gameObjects/headers/renderable.hpp"
-#include "../../headers/fileHandler.hpp"
-#include "../../gameObjects/headers/objects2D/gameObject2DAnimated.hpp"
-#include "../../gameObjects/headers/objects2D/gameObject2DStatic.hpp"
-#include "../../gameObjects/headers/menuItems/menuItem.hpp"
+#include "../gameObjects/camera.hpp"
+#include "../gameObjects/renderable.hpp"
+#include "../fileHandler.hpp"
+#include "../gameObjects/objects2D/gameObject2DAnimated.hpp"
+#include "../gameObjects/objects2D/gameObject2DStatic.hpp"
+#include "../gameObjects/menuItems/menuItem.hpp"
 
 namespace dojo{
 

@@ -4,7 +4,7 @@ Menu::Menu(dojo::Renderer* _renderer) {
     m_renderer = _renderer;
     dojo::Texture* buttonTexture = new dojo::Texture(glm::vec2(1000, 200));
     m_renderer->textToTexture(buttonTexture, "play game", glm::vec3(0));
-    playButton = new dojo::MenuItem(glm::vec2(0.3, 0.45), glm::vec2(0.5, 0.1), buttonTexture);
+    playButton = new dojo::MenuItem(glm::vec2(0.3, 0.45), glm::vec2(0.4, 0.1), buttonTexture);
 }
 Menu::~Menu() {
     delete playButton;

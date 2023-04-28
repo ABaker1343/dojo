@@ -1,8 +1,8 @@
 CC=g++ --std=c++20
-CFLAGS=-Wall -lGL -L.. -ldojo -I. -Wl,-rpath=.. $(shell pkg-config --cflags freetype2) -lfreetype
+CFLAGS=-Wall -lGL -L../lib/ -ldojo -I. -Wl,-rpath=../lib/ $(shell pkg-config --cflags freetype2) -lfreetype
 
-example:
+example: example.cpp
 	$(CC) example.cpp -g -o example $(CFLAGS)
 
-walker:
-	$(CC) walker.cpp -g -o walker $(CFLAGS)
+clean:
+	rm example

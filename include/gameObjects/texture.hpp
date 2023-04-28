@@ -2,11 +2,11 @@
 #define __HEADER_TEXTURE
 
 #include <string>
-#include "../../headers/glad/glad.h"
+#include "glad/glad.h"
 #include <stdexcept>
 #include <glm/glm.hpp>
 
-#include "../../headers/stb_image.h"
+#include "../stb_image.h"
 
 namespace dojo {
 

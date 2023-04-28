@@ -1,4 +1,4 @@
-#include "headers/texture.hpp"
+#include "../../include/gameObjects/texture.hpp"
 
 namespace dojo {
 
