@@ -27,3 +27,8 @@ clean:
 printSource:
 	echo $(SOURCE)
 	echo $(OBJ)
+
+install: lib/libdojo.so
+	cp lib/libdojo.so /lib/libdojo.so
+	cp -r include /usr/include/dojo
+
