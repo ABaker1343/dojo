@@ -11,10 +11,10 @@ std::vector<MouseCallback> Window::m_mouseCallbacks = std::vector<MouseCallback>
 std::vector<CursorPosCallback> Window::m_cursorPosCallbacks = std::vector<CursorPosCallback>();
 std::vector<ResizeCallback> Window::m_resizeCallbacks = std::vector<ResizeCallback>();
 
-bool Window::m_usingDefaultKeyCallback = false;
-bool Window::m_usingDefaultMouseCallback = false;
-bool Window::m_usingDefaultCursorCallback = false;
-bool Window::m_usingDefaultResizeCallback = false;
+bool Window::m_usingDefaultKeyCallback = true;
+bool Window::m_usingDefaultMouseCallback = true;
+bool Window::m_usingDefaultCursorCallback = true;
+bool Window::m_usingDefaultResizeCallback = true;
 
 std::vector<Renderer*> Window::m_ActiveRenderers = std::vector<Renderer*>();
 
