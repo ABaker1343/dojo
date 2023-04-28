@@ -1,4 +1,5 @@
 #include "../../include/window/window.hpp"
+#include <GLFW/glfw3.h>
 
 namespace dojo {
 
@@ -246,6 +247,10 @@ glm::vec2 Window::getDimensions() {
 
 void Window::bindRenderer(Renderer* _renderer) {
     m_ActiveRenderers.push_back(_renderer);
+}
+
+bool Window::shouldClose() {
+    return glfwWindowShouldClose(m_Window);
 }
 
 Window::~Window() {

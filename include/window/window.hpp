@@ -48,6 +48,11 @@ class Window {
         void flipBuffers();
         void pollEvents();
 
+        glm::vec2 getDimensions();
+        glm::vec2 getMousePos();
+
+        bool shouldClose();
+
         void useDefaultKeyCallback(bool _use);
         unsigned int setCustomKeyCallback(KeyCallbackFunction _callback);
         void removeKeyCallback(unsigned int _callbackID);
@@ -63,9 +68,6 @@ class Window {
         void useDefaultResizeCallback(bool _use);
         unsigned int setCustomResizeCallback(ResizeCallbackFunction _callback);
         void removeResizeCallback(unsigned int _callbackID);
-
-        glm::vec2 getDimensions();
-        glm::vec2 getMousePos();
 
         static bool KEYS[GLFW_KEY_LAST + 1];
         static bool MOUSE_BUTTONS[GLFW_MOUSE_BUTTON_LAST + 1];
