@@ -31,4 +31,6 @@ printSource:
 install: lib/libdojo.so
 	cp lib/libdojo.so /lib/libdojo.so
 	cp -r include /usr/include/dojo
+	chmod uog+rx /lib/libdojo.so
+	chmod -R uog+rx /usr/include/dojo
 
