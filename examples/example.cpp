@@ -113,7 +113,7 @@ int main() {
     renderer->textToTexture(tex, "long string for a menu", glm::vec3(1));
     //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
     dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), tex);
-    
+
 
     //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");
     //renderer->setShader("2DStatic");
