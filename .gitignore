@@ -1,1 +1,4 @@
 **/*.o
+lib/*
+examples/example
+examples/walker/walker

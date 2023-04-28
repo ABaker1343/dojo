@@ -52,7 +52,6 @@ void Game::runMainLoop() {
     m_window->useDefaultKeyCallback(true);
     m_walker->m_state = Walker::IDLE;
     m_walker->m_object->setAnimation("idle");
-    std::cout << "flip " << m_walker->m_object->getFlip().x;
 
     float movementSpeed = 0.003;
     float animationTime = 1000.f/4.f;
