@@ -40,6 +40,10 @@ namespace dojo {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         }
 
+        else {
+            throw std::runtime_error("invalid file format for texture: " + _filepath);
+        }
+
         glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
