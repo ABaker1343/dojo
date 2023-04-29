@@ -18,10 +18,10 @@ namespace dojo {
 class Window;
 class Renderer;
 
-typedef std::function<void(int, int, int, int)> KeyCallbackFunction;
-typedef std::function<void(int, int, int)> MouseCallbackFunction;
-typedef std::function<void(double, double)> CursorPosCallbackFunction;
-typedef std::function<void(int, int)> ResizeCallbackFunction;
+typedef std::function<void(int _key, int _scancode, int _action, int _mods)> KeyCallbackFunction;
+typedef std::function<void(int _button, int _action, int _mods)> MouseCallbackFunction;
+typedef std::function<void(double _x, double _y)> CursorPosCallbackFunction;
+typedef std::function<void(int _width, int _height)> ResizeCallbackFunction;
 
 typedef struct {
     unsigned int ID;

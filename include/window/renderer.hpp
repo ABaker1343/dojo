@@ -41,8 +41,8 @@ class Renderer {
         void draw(MenuItem* _item);
         void draw(Camera* _camera, const std::string& _text);
 
-        void textToTexture(Texture* _texture, const std::string& _text, glm::vec3 _textColor, glm::vec3 _backgroundColor = glm::vec3(0.5));
-        void drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec3 _color);
+        void textToTexture(Texture* _texture, const std::string& _text, glm::vec4 _textColor, glm::vec3 _backgroundColor = glm::vec3(0.5));
+        void drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec4 _color);
 
         void clear();
         void setShader(const std::string& _shader);
@@ -75,7 +75,7 @@ class Renderer {
         std::map<std::string, unsigned int> m_Shaders;
         std::map<char, FontCharacter> m_fontMapTerm;
 
-        void drawMenuText(const std::string& _text, float _x, float _y, float _scale, glm::vec3 _textColor);
+        void drawMenuText(const std::string& _text, float _x, float _y, float _scale, glm::vec4 _textColor);
 
         void setUniformMat4(const char* _name, glm::mat4 _value);
         void setUniformVec4(const char* _name, glm::vec4 _value);

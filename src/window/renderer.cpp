@@ -157,7 +157,7 @@ void Renderer::drawText(Camera* _camera, const std::string& _text, glm::vec3 _po
     
 }
 
-void Renderer::textToTexture(Texture* _texture, const std::string& _text, glm::vec3 _textColor, glm::vec3 _backgroundColor) {
+void Renderer::textToTexture(Texture* _texture, const std::string& _text, glm::vec4 _textColor, glm::vec3 _backgroundColor) {
     glm::ivec2 textureSize = _texture->getSize();
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_textureFramebuffer);
@@ -193,7 +193,7 @@ void Renderer::textToTexture(Texture* _texture, const std::string& _text, glm::v
     glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.w);
 }
 
-void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float _scale, glm::vec3 _textColor) {
+void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float _scale, glm::vec4 _textColor) {
 
     std::string::const_iterator it;
 
