@@ -114,10 +114,10 @@ void Renderer::draw(MenuItem* _item) {
 void Renderer::draw(Camera* _camera, const std::string& _text) {
     if (m_useDefaultShaders) setShader("textShader");
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
-    drawText(_camera, _text, glm::vec3(1), 1, glm::vec3(1));
+    drawText(_camera, _text, glm::vec3(1), 1, glm::vec4(1));
 }
 
-void Renderer::drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec3 _color) {
+void Renderer::drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec4 _color) {
     setShader("textShader");
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(m_textVertexArray);

@@ -110,7 +110,7 @@ int main() {
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
 
     dojo::Texture* tex = new dojo::Texture(glm::ivec2(1800, 720));
-    renderer->textToTexture(tex, "long string for a menu", glm::vec3(1));
+    renderer->textToTexture(tex, "long string for a menu", glm::vec4(1));
     //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
     dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), tex);
 
