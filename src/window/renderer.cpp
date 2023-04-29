@@ -96,6 +96,50 @@ void Renderer::draw(MenuItem* _item) {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
+void Renderer::draw(const std::string& _text) {
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+}
+
+void Renderer::drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec3 _color) {
+    setShader("textShader");
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(m_textVertexArray);
+    glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
+
+    setUniformMat4("in_projection", _camera->getProjectionTransform());
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformVec3("in_color", _color);
+
+    //std::string::iterator it;
+    for (auto it = _text.begin(); it != _text.end(); it++) {
+        FontCharacter c = m_fontMapTerm[*it];
+
+        float xpos = _pos.x + c.bearing.x * _scale;
+        float ypos = _pos.y - (c.size.y - c.bearing.y) * _scale;
+
+        float w = c.size.x * _scale;
+        float h = c.size.y * _scale;
+
+        // update VBO for each character
+        float vertices[6][4] = {
+            { xpos,     ypos + h,   0.0f, 0.0f },            
+            { xpos,     ypos,       0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 0.0f }           
+        };
+
+        glBindTexture(GL_TEXTURE_2D, c.textureHandle);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        _pos.x += (c.advance >> 6) * _scale;
+    }
+    
+}
+
 void Renderer::textToTexture(Texture* _texture, const std::string& _text, glm::vec3 _textColor, glm::vec3 _backgroundColor) {
     glm::ivec2 textureSize = _texture->getSize();
 
@@ -155,6 +199,7 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
     glm::vec2 absPadding = totalTextSize * padding;
     
     glm::mat4 projection = glm::ortho(-absPadding.x, totalTextSize.x + absPadding.x, -maxyBearing/2 -absPadding.y, totalTextSize.y + absPadding.y);
+    glm::mat4 cameraTransform = glm::identity<glm::mat4>();
 
     setShader("textShader");
     glActiveTexture(GL_TEXTURE0);
@@ -162,6 +207,7 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
     glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
 
     setUniformMat4("in_projection", projection);
+    setUniformMat4("in_cameraTransform", cameraTransform);
     setUniformVec3("in_color", _textColor);
 
     for (it = _text.begin(); it != _text.end(); it++) {

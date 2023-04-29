@@ -39,8 +39,10 @@ class Renderer {
         void draw(Camera* _camera, GameObject2DStatic* _object);
         void draw(Camera* _camera, GameObject2DAnimated* _object);
         void draw(MenuItem* _item);
+        void draw(const std::string& _text);
 
         void textToTexture(Texture* _texture, const std::string& _text, glm::vec3 _textColor, glm::vec3 _backgroundColor = glm::vec3(0.5));
+        void drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec3 _color);
 
         void clear();
         void setShader(const std::string& _shader);
