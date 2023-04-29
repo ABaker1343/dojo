@@ -1,4 +1,5 @@
 #include "../../include/gameObjects/texture.hpp"
+#include <iostream>
 
 namespace dojo {
 
@@ -47,7 +48,7 @@ namespace dojo {
         glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
-
+        
     }
 
     Texture::Texture(glm::ivec2 _size) {
