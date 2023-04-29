@@ -11,12 +11,15 @@ Renderer::Renderer(Window* _window, glm::vec2 _VPPos, glm::vec2 _VPSize) {
     m_VPScale = _VPSize;
     m_VPPos = _VPPos;
     m_clearColor = glm::vec4(0.0, 0.0, 0.0, 1.0); // black
+                                                  //
     glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.w);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquation(GL_FUNC_ADD);
+
     setShaderPath("shaders/");
+    m_useDefaultShaders = true;
     resize();
     _window->bindRenderer(this);
 
@@ -44,6 +47,9 @@ void Renderer::clear() {
 }
 
 void Renderer::draw(Camera* _camera, Renderable* _object) {
+
+    if (m_useDefaultShaders) setShader("default");
+
     //bind uniforms
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
@@ -56,6 +62,9 @@ void Renderer::draw(Camera* _camera, Renderable* _object) {
 }
 
 void Renderer::draw(Camera* _camera, GameObject2DStatic* _object) {
+
+    if (m_useDefaultShaders) setShader("2DStatic");
+
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
 
@@ -70,6 +79,9 @@ void Renderer::draw(Camera* _camera, GameObject2DStatic* _object) {
 }
 
 void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
+
+    if (m_useDefaultShaders) setShader("2DAnimated");
+
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
 
@@ -88,6 +100,9 @@ void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
 }
 
 void Renderer::draw(MenuItem* _item) {
+    
+    if (m_useDefaultShaders) setShader("menuShader");
+
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
     glBindTexture(GL_TEXTURE_2D, _item->getTexture()->getHandle());
     setUniformVec4("in_location", _item->getLocation());
@@ -96,8 +111,10 @@ void Renderer::draw(MenuItem* _item) {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::draw(const std::string& _text) {
+void Renderer::draw(Camera* _camera, const std::string& _text) {
+    if (m_useDefaultShaders) setShader("textShader");
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+    drawText(_camera, _text, glm::vec3(1), 1, glm::vec3(1));
 }
 
 void Renderer::drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec3 _color) {
@@ -160,6 +177,7 @@ void Renderer::textToTexture(Texture* _texture, const std::string& _text, glm::v
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     unsigned int prev_shader = m_CurrentShader;
+    setShader("textShader");
 
     drawMenuText(_text, 0, 0, 1, _textColor);
 
@@ -201,7 +219,6 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
     glm::mat4 projection = glm::ortho(-absPadding.x, totalTextSize.x + absPadding.x, -maxyBearing/2 -absPadding.y, totalTextSize.y + absPadding.y);
     glm::mat4 cameraTransform = glm::identity<glm::mat4>();
 
-    setShader("textShader");
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(m_textVertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);

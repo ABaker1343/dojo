@@ -39,7 +39,7 @@ class Renderer {
         void draw(Camera* _camera, GameObject2DStatic* _object);
         void draw(Camera* _camera, GameObject2DAnimated* _object);
         void draw(MenuItem* _item);
-        void draw(const std::string& _text);
+        void draw(Camera* _camera, const std::string& _text);
 
         void textToTexture(Texture* _texture, const std::string& _text, glm::vec3 _textColor, glm::vec3 _backgroundColor = glm::vec3(0.5));
         void drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec3 _color);
@@ -58,11 +58,12 @@ class Renderer {
         Window* m_Window;
         std::string m_ShaderPath;
         unsigned int m_CurrentShader;
+        bool m_useDefaultShaders;
+
         glm::vec2 m_VPAbsPos;
         glm::vec3 m_VPAbsScale;
         glm::vec2 m_VPScale;
         glm::vec2 m_VPPos;
-        
         glm::vec4 m_clearColor;
 
         unsigned int m_textureFramebuffer;
