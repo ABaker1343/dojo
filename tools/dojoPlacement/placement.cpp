@@ -86,17 +86,34 @@ void Placement::run() {
 }
 
 void Placement::update() {
-    if (m_window->KEYS[GLFW_KEY_W] || m_window->KEYS[GLFW_KEY_UP]) {
+    if (m_window->KEYS[GLFW_KEY_W]) {
         m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(0, 0.1, 0));
     }
-    if (m_window->KEYS[GLFW_KEY_S] || m_window->KEYS[GLFW_KEY_DOWN]) {
+    if (m_window->KEYS[GLFW_KEY_S]) {
         m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(0, -0.1, 0));
     }
-    if (m_window->KEYS[GLFW_KEY_A] || m_window->KEYS[GLFW_KEY_LEFT]) {
+    if (m_window->KEYS[GLFW_KEY_A]) {
         m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(-0.1, 0, 0));
     }
-    if (m_window->KEYS[GLFW_KEY_D] || m_window->KEYS[GLFW_KEY_RIGHT]) {
+    if (m_window->KEYS[GLFW_KEY_D]) {
         m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(+0.1, 0, 0));
+    }
+
+    if (m_window->KEYS[GLFW_KEY_UP]) {
+        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(0, 0, -0.1));
+        m_cameraWrap->updateInfo(m_renderer.get());
+    }
+    if (m_window->KEYS[GLFW_KEY_DOWN]) {
+        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(0, 0, 0.1));
+        m_cameraWrap->updateInfo(m_renderer.get());
+    }
+    if (m_window->KEYS[GLFW_KEY_LEFT]) {
+        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(-0.1, 0, 0));
+        m_cameraWrap->updateInfo(m_renderer.get());
+    }
+    if (m_window->KEYS[GLFW_KEY_RIGHT]) {
+        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(0.1, 0, 0));
+        m_cameraWrap->updateInfo(m_renderer.get());
     }
 
 }
