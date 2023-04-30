@@ -2,8 +2,6 @@
 #define __HEADER_CAMERA
 
 #include <glm/glm.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace dojo {
@@ -15,7 +13,6 @@ class Camera {
 
         void setPos(glm::vec3 _pos);
         void lookAt(glm::vec3 _target);
-        void rotate(float degrees, glm::vec3 _axis);
         
         glm::vec3 getPosition();
 
@@ -23,16 +20,11 @@ class Camera {
         glm::mat4 getProjectionTransform();
 
     private:
-        glm::mat4 m_cameraTransform;
-        glm::mat4 m_projectionTransform;
+        glm::mat4 m_CameraTransform;
+        glm::mat4 m_ProjectionTransform;
 
         float m_FOV;
-        glm::vec3 m_cameraUp;
-        glm::vec3 m_cameraFront;
-        float m_pitch;
-        float m_yaw;
-        float m_roll;
-        glm::vec3 m_center;
+        glm::vec3 m_CameraUp;
 
 };
 

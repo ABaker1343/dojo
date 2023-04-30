@@ -7,7 +7,7 @@ void printvec(glm::vec3 _vec) {
     std::cout << _vec.x << " " << _vec.y << " " << _vec.z << std::endl;
 }
 
-void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object) {
+void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, dojo::Camera* _camera) {
 
     static auto lastUpdateTime = std::chrono::steady_clock::now();
     static auto lastAnimationTime = lastUpdateTime;
@@ -71,6 +71,16 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object) {
         }
     }
 
+    if (_window->KEYS[GLFW_KEY_LEFT]) {
+        _camera->rotate(-20 * timePassed/1000.f, glm::vec3(0,1,0));
+    } else if (_window->KEYS[GLFW_KEY_RIGHT]) {
+        _camera->rotate(20 * timePassed/1000.f, glm::vec3(0,1,0));
+    } else if (_window->KEYS[GLFW_KEY_UP]) {
+        _camera->setPos(_camera->getPosition() + glm::vec3(0 ,0, -1 * movementSpeed));
+    } else if (_window->KEYS[GLFW_KEY_DOWN]) {
+        _camera->setPos(_camera->getPosition() + glm::vec3(0, 0, 1 * movementSpeed));
+    }
+
     lastUpdateTime = std::chrono::steady_clock::now();
 }
 
@@ -89,8 +99,9 @@ int main() {
             });
 
     dojo::Camera* cam = new dojo::Camera();
-    cam->setPos(glm::vec3(0.f, 0.f, 15.f));
-    cam->lookAt(glm::vec3(0.f));
+    //cam->setPos(glm::vec3(0.f, 0.f, 15.f));
+    //cam->lookAt(glm::vec3(0.f));
+    //cam->lookAt(glm::vec3(0, 0, -1));
 
     std::cout << "created renderer" << std::endl;
 
@@ -149,7 +160,7 @@ int main() {
             box2->snapToSide(obj1, dojo::BoxCollider::Side::LEFT);
         }
 
-        HandleInputs(w, obj1);
+        HandleInputs(w, obj1, cam);
         obj2->flipx();
 
         frames ++;
