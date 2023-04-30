@@ -9,13 +9,20 @@
 namespace dojo {
 
 class Camera {
+
+    public:
+
+        enum CameraDir {
+            YAW, PITCH, ROLL
+        };
+
     public:
         Camera();
         ~Camera();
 
         void setPos(glm::vec3 _pos);
         void lookAt(glm::vec3 _target);
-        void rotate(float degrees, glm::vec3 _axis);
+        void rotate(float degrees, CameraDir _dir);
         
         glm::vec3 getPosition();
 
@@ -28,12 +35,16 @@ class Camera {
 
         float m_FOV;
         glm::vec3 m_cameraUp;
+        glm::vec3 m_worldUp;
         glm::vec3 m_cameraFront;
+        glm::vec3 m_cameraRight;
+        glm::vec3 m_cameraPos;
         float m_pitch;
         float m_yaw;
         float m_roll;
         glm::vec3 m_center;
 
+        void updateVectors();
 };
 
 }

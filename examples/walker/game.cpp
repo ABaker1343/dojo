@@ -10,16 +10,13 @@ Game::Game() {
 
     m_camera = new dojo::Camera();
     m_camera->setPos(glm::vec3(0, 3, 10));
-    m_camera->lookAt(glm::vec3(0, 3, 0));
 
     m_menu = new Menu(m_renderer);
     m_walker = new Walker();
     m_walker->m_object->setScale(glm::vec2(1.7));
     m_walker->m_object->setPos(glm::vec3(0, 0.9, 0));
 
-    dojo::Texture* gotexture = new dojo::Texture(glm::ivec2(1000, 200));
-    m_renderer->textToTexture(gotexture, "YOU DIED", glm::vec3(1.0, 0, 0), glm::vec4(0));
-    m_gameOverText = new dojo::MenuItem(glm::vec2(0.3, 0.55), glm::vec2(0.4, 0.1), gotexture);
+    m_gameOverText = new dojo::MenuItem(glm::vec2(0.3, 0.55), glm::vec2(0.4, 0.1), "YOU DIED", m_renderer, glm::vec4(1.0, 0, 0, 1), glm::vec4(0));
 
     m_background = new dojo::GameObject2DStatic("Background.png");
     m_background->setScale(glm::vec2(15));

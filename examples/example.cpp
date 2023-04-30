@@ -72,13 +72,17 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
     }
 
     if (_window->KEYS[GLFW_KEY_LEFT]) {
-        _camera->rotate(-20 * timePassed/1000.f, glm::vec3(0,1,0));
+        _camera->rotate(-20 * timePassed/1000.f, dojo::Camera::YAW);
     } else if (_window->KEYS[GLFW_KEY_RIGHT]) {
-        _camera->rotate(20 * timePassed/1000.f, glm::vec3(0,1,0));
+        _camera->rotate(20 * timePassed/1000.f, dojo::Camera::YAW);
     } else if (_window->KEYS[GLFW_KEY_UP]) {
         _camera->setPos(_camera->getPosition() + glm::vec3(0 ,0, -1 * movementSpeed));
     } else if (_window->KEYS[GLFW_KEY_DOWN]) {
         _camera->setPos(_camera->getPosition() + glm::vec3(0, 0, 1 * movementSpeed));
+    } else if (_window->KEYS[GLFW_KEY_K]) {
+        _camera->setPos(_camera->getPosition() + glm::vec3(1 * movementSpeed, 0, 0));
+    } else if (_window->KEYS[GLFW_KEY_J]) {
+        _camera->setPos(_camera->getPosition() + glm::vec3(-1 * movementSpeed, 0 , 0));
     }
 
     lastUpdateTime = std::chrono::steady_clock::now();

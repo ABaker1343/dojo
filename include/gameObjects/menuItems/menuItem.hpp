@@ -16,7 +16,9 @@ namespace dojo {
 
 class MenuItem : public Renderable {
     public:
-        MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _displayText, Renderer* _renderer);
+        MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _displayText, Renderer* _renderer,
+                glm::vec4 _textColor = glm::vec4(0, 0, 0, 1), glm::vec4 _backgroundColor = glm::vec4(0.5, 0.5, 0.5, 1));
+
         MenuItem(glm::vec2 _pos, glm::vec2 _scale, Texture* _texture);
         MenuItem(glm::vec2 _pos, glm::vec2 _scale);
         ~MenuItem();
