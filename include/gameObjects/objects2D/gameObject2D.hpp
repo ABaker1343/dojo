@@ -41,7 +41,7 @@ class GameObject2D : public GameObject, public Renderable {
 
     protected:
         glm::ivec2 m_Flip;
-        std::vector<float> *m_VertexData;
+        std::vector<float> m_VertexData;
 
         void createBuffers() override;
         

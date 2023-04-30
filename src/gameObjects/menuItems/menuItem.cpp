@@ -6,14 +6,27 @@ namespace dojo {
 unsigned int MenuItem::m_staticVertexArray = 0;
 unsigned int MenuItem::m_staticVertexBuffer = 0;
 
-MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _displayText) {
-    m_texture = new Texture(glm::ivec2(500, 500));
+MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _displayText, Renderer* _renderer) {
+    int textureX = trunc(_scale.x * 2000);
+    int textureY = trunc(_scale.y * 2000);
+    m_texture = new Texture(glm::ivec2(textureX, textureY));
+    _renderer->textToTexture(m_texture, _displayText);
+    createBuffers();
     m_pos = _pos;
     m_scale = _scale;
 };
 
 MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale, Texture* _texture) {
     m_texture = _texture;
+    createBuffers();
+    m_pos = _pos;
+    m_scale = _scale;
+}
+
+MenuItem::MenuItem(glm::vec2 _pos, glm::vec2 _scale) {
+    int textureX = trunc(_scale.x * 2000);
+    int textureY = trunc(_scale.y * 2000);
+    m_texture = new Texture(glm::ivec2(textureX, textureY));
     createBuffers();
     m_pos = _pos;
     m_scale = _scale;

@@ -41,7 +41,7 @@ class Renderer {
         void draw(MenuItem* _item);
         void draw(Camera* _camera, const std::string& _text);
 
-        void textToTexture(Texture* _texture, const std::string& _text, glm::vec4 _textColor, glm::vec3 _backgroundColor = glm::vec3(0.5));
+        void textToTexture(Texture* _texture, const std::string& _text, glm::vec4 _textColor = glm::vec4(0, 0, 0, 1), glm::vec3 _backgroundColor = glm::vec3(0.5));
         void drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec4 _color);
 
         void clear();

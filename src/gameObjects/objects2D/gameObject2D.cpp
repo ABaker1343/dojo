@@ -3,7 +3,7 @@
 namespace dojo {
     
     GameObject2D::GameObject2D() : GameObject() {
-        m_VertexData = new std::vector<float> {
+        m_VertexData = std::vector<float> {
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
             -1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
             1.0f, 1.0f, 0.0f,   1.0f, 1.0f,
@@ -12,7 +12,7 @@ namespace dojo {
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
         };
 
-        m_VertexBufferSize = m_VertexData->size();
+        m_VertexBufferSize = m_VertexData.size();
 
         createBuffers();
 
@@ -30,7 +30,7 @@ namespace dojo {
         glBindVertexArray(m_VertexArrayObject);
         
         glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_VertexData->size(), m_VertexData->data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_VertexData.size(), m_VertexData.data(), GL_STATIC_DRAW);
 
         // vertex positions
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)0);

@@ -9,11 +9,16 @@
 #include "../renderable.hpp"
 
 namespace dojo {
+    class Renderer;
+}
+
+namespace dojo {
 
 class MenuItem : public Renderable {
     public:
-        MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _displayText);
+        MenuItem(glm::vec2 _pos, glm::vec2 _scale, const std::string& _displayText, Renderer* _renderer);
         MenuItem(glm::vec2 _pos, glm::vec2 _scale, Texture* _texture);
+        MenuItem(glm::vec2 _pos, glm::vec2 _scale);
         ~MenuItem();
 
         bool isMouseOver(glm::vec2 _windowSize, glm::vec2 _mousePos);
@@ -40,5 +45,7 @@ class MenuItem : public Renderable {
 };
 
 }
+
+#include "../../window/renderer.hpp"
 
 #endif
