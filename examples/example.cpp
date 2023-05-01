@@ -85,6 +85,12 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
         _camera->setPos(_camera->getPosition() + glm::vec3(-1 * movementSpeed, 0 , 0));
     }
 
+    if (_window->KEYS[GLFW_KEY_O]) {
+        _camera->makeOrtho();
+    } else if (_window->KEYS[GLFW_KEY_P]){
+        _camera->makePerspective();
+    }
+
     lastUpdateTime = std::chrono::steady_clock::now();
 }
 

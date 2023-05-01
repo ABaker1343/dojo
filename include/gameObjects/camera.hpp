@@ -26,6 +26,10 @@ class Camera {
         
         glm::vec3 getPosition();
 
+        void makeOrtho();
+        void makePerspective();
+        void setFOV(float _fov);
+
         glm::mat4 getCameraTransform();
         glm::mat4 getProjectionTransform();
 
@@ -34,6 +38,7 @@ class Camera {
         glm::mat4 m_projectionTransform;
 
         float m_FOV;
+        float m_aspectRatio;
         glm::vec3 m_cameraUp;
         glm::vec3 m_worldUp;
         glm::vec3 m_cameraFront;

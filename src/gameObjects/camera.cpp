@@ -21,8 +21,9 @@ namespace dojo {
 
         setPos(glm::vec3(0, 0, 15.f));
         
-        m_FOV = 60;
-        m_projectionTransform = glm::perspective(glm::radians(m_FOV), 16.f/9.f, 0.1f, 100.f);
+        m_FOV = 90;
+        m_aspectRatio = 16.f/9.f;
+        m_projectionTransform = glm::perspective(glm::radians(m_FOV), m_aspectRatio, 0.1f, 100.f);
 
     }
 
@@ -33,6 +34,19 @@ namespace dojo {
     void Camera::setPos(glm::vec3 _pos) {
         m_cameraPos = _pos;
         updateVectors();
+    }
+
+    void Camera::makeOrtho() {
+        float verticalFOV = m_FOV * m_aspectRatio;
+        m_projectionTransform = glm::ortho(-0.5 * m_FOV, 0.5 * m_FOV, -0.5 * verticalFOV, 0.5 * verticalFOV, 0.1, 100.0);
+    }
+
+    void Camera::makePerspective() {
+        m_projectionTransform = glm::perspective(glm::radians(m_FOV), m_aspectRatio, 0.1f, 100.f);
+    }
+
+    void Camera::setFOV(float _fov) {
+        m_FOV = _fov;
     }
 
     void Camera::lookAt(glm::vec3 _target) {
