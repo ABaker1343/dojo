@@ -5,7 +5,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "glad/glad.h"
 
-#include "texture.hpp"
 
 namespace dojo {
 
@@ -20,11 +19,11 @@ class Renderable {
         glm::mat4 getWorldTransform();
         
     protected:
-        unsigned int m_VertexBuffer;
-        unsigned int m_VertexArrayObject;
-        unsigned int m_VertexBufferSize;
+        unsigned int m_vertexBuffer;
+        unsigned int m_vertexArrayObject;
+        unsigned int m_vertexBufferSize;
 
-        glm::mat4 m_WorldTransform;
+        glm::mat4 m_worldTransform;
 
         virtual void createBuffers();
 };

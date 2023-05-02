@@ -99,6 +99,32 @@ void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
     glDrawArrays(GL_TRIANGLES, 0, _object->getVertexBufferSize() / 3);
 }
 
+void Renderer::draw(Camera* _camera, GameObject3D* _object) {
+    if (m_useDefaultShaders) setShader("default3D");
+
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+
+    setUniformMat4("in_worldTransform", _object->getWorldTransform());
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+
+    /*for (std::vector<Mesh>::iterator it = _object->getMeshes()->begin(); it != _object->getMeshes()->end(); it++) {
+        glBindTexture(GL_TEXTURE_2D, it->getMaterial()->kd_map->getHandle());
+        glBindVertexArray(it->getVertexArray());
+        glDrawArrays(GL_TRIANGLES, 0, it->getVertices()->size() / 3);
+        std::cout << "vertex buffer size from renderer: " << it->getVertexBufferSize() << std::endl;
+        std::cout << "vertex array from renderer: " << it->getVertexArray() << std::endl;
+    }*/
+
+    auto meshes = _object->getMeshes();
+    for (unsigned int i = 0; i < meshes->size(); i++) {
+        glBindTexture(GL_TEXTURE_2D, meshes->at(i).getMaterial()->kd_map->getHandle());
+        glBindVertexArray(meshes->at(i).getVertexArray());
+        glDrawArrays(GL_TRIANGLES, 0, meshes->at(i).getVertexBufferSize() / 3);
+    }
+    
+}
+
 void Renderer::draw(MenuItem* _item) {
     
     if (m_useDefaultShaders) setShader("menuShader");
@@ -296,7 +322,7 @@ void Renderer::setShaderPath(const std::string& _shaderPath) {
 
 void Renderer::loadShaders() {
     // load the shaders to use
-    std::vector<std::string> shaderNames = {"default", "2DAnimated", "2DStatic", "menuShader", "textShader"};
+    std::vector<std::string> shaderNames = {"default", "2DAnimated", "2DStatic", "menuShader", "textShader", "default3D"};
 
     for (const std::string& shader : shaderNames) {
         // load the shader

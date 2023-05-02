@@ -7,7 +7,7 @@ FREETYPE_DLL=D:\freetype
 
 FLAGS=-Wall -L$(FREETYPE_DLL) -L$(GLFW_PATH)\lib-mingw-w64 -lglfw3 -lgdi32 -lopengl32 -lfreetype -I$(GLFW_PATH)\include -I$(GLM_PATH) -I$(FREETYPE_PATH)\include
 
-SOURCE=$(wildcard src/*.cpp) $(wildcard src/window/*.cpp) $(wildcard src/gameObjects/*.cpp) $(wildcard src/gameObjects/objects2D/*.cpp) $(wildcard src/gameObjects/colliders/*.cpp) $(wildcard src/gameObjects/menuItems/*.cpp)
+SOURCE=$(wildcard src/*.cpp) $(wildcard src/window/*.cpp) $(wildcard src/gameObjects/*.cpp) $(wildcard src/gameObjects/objects2D/*.cpp) $(wildcard src/gameObjects/colliders/*.cpp) $(wildcard src/gameObjects/menuItems/*.cpp) $(wildcard src/gameObjects/objects3D/*.cpp)
 
 HEADERS=$(pathsubst src/%, include/%, $(SOURCE))
 HEADERS=$(pathsubst %.cpp, %.hpp, $(HEADERS))

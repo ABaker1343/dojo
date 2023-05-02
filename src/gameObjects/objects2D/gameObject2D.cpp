@@ -12,11 +12,11 @@ namespace dojo {
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
         };
 
-        m_VertexBufferSize = m_VertexData.size();
+        m_vertexBufferSize = m_VertexData.size();
 
         createBuffers();
 
-        m_WorldTransform = glm::mat4(1.0f);
+        m_worldTransform = glm::mat4(1.0f);
 
         setPos(glm::vec3(0,0,0));
         setScale(glm::vec3(1.f));
@@ -25,11 +25,11 @@ namespace dojo {
     }
 
     void GameObject2D::createBuffers() {
-        glGenBuffers(1, &m_VertexBuffer);
-        glGenVertexArrays(1, &m_VertexArrayObject);
-        glBindVertexArray(m_VertexArrayObject);
+        glGenBuffers(1, &m_vertexBuffer);
+        glGenVertexArrays(1, &m_vertexArrayObject);
+        glBindVertexArray(m_vertexArrayObject);
         
-        glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_VertexData.size(), m_VertexData.data(), GL_STATIC_DRAW);
 
         // vertex positions
@@ -44,37 +44,37 @@ namespace dojo {
     }
 
     void GameObject2D::setPos(float _x, float _y, float _z) {
-        m_WorldTransform[3][0] = _x;
-        m_WorldTransform[3][1] = _y;
-        m_WorldTransform[3][2] = _z;
+        m_worldTransform[3][0] = _x;
+        m_worldTransform[3][1] = _y;
+        m_worldTransform[3][2] = _z;
     }
     void GameObject2D::setPos(glm::vec3 _pos) {
-        m_WorldTransform[3][0] = _pos.x;
-        m_WorldTransform[3][1] = _pos.y;
-        m_WorldTransform[3][2] = _pos.z;
+        m_worldTransform[3][0] = _pos.x;
+        m_worldTransform[3][1] = _pos.y;
+        m_worldTransform[3][2] = _pos.z;
     }
 
     void GameObject2D::setPos(float _x, float _y) {
-        m_WorldTransform[3][0] = _x;
-        m_WorldTransform[3][1] = _y;
+        m_worldTransform[3][0] = _x;
+        m_worldTransform[3][1] = _y;
     }
     void GameObject2D::setPos(glm::vec2 _pos) {
-        m_WorldTransform[3][0] = _pos.x;
-        m_WorldTransform[3][1] = _pos.y;
+        m_worldTransform[3][0] = _pos.x;
+        m_worldTransform[3][1] = _pos.y;
     }
 
     void GameObject2D::setScale(float _x, float _y, float _z) {
-        m_WorldTransform[0][0] = _x;
-        m_WorldTransform[1][1] = _y;
-        m_WorldTransform[2][2] = _z;
+        m_worldTransform[0][0] = _x;
+        m_worldTransform[1][1] = _y;
+        m_worldTransform[2][2] = _z;
     }
     void GameObject2D::setScale(glm::vec3 _scale) {
         setScale(_scale.x, _scale.y, _scale.z);
     }
 
     void GameObject2D::setScale(float _x, float _y) {
-        m_WorldTransform[0][0] = _x;
-        m_WorldTransform[1][1] = _y;
+        m_worldTransform[0][0] = _x;
+        m_worldTransform[1][1] = _y;
     }
     void GameObject2D::setScale(glm::vec2 _scale) {
         setScale(_scale.x, _scale.y);
@@ -90,17 +90,17 @@ namespace dojo {
 
     glm::vec3 GameObject2D::getPos() {
         glm::vec3 pos;
-        pos.x = m_WorldTransform[3][0];
-        pos.y = m_WorldTransform[3][1];
-        pos.z = m_WorldTransform[3][2];
+        pos.x = m_worldTransform[3][0];
+        pos.y = m_worldTransform[3][1];
+        pos.z = m_worldTransform[3][2];
         return pos;
     }
     
     glm::vec3 GameObject2D::getScale() {
         glm::vec3 scale;
-        scale.x = m_WorldTransform[0][0];
-        scale.y = m_WorldTransform[1][1];
-        scale.z = m_WorldTransform[2][2];
+        scale.x = m_worldTransform[0][0];
+        scale.y = m_worldTransform[1][1];
+        scale.z = m_worldTransform[2][2];
         return scale;
     }
 

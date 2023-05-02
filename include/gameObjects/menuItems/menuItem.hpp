@@ -5,12 +5,19 @@
 #include <vector>
 #include <iostream>
 
-#include "../texture.hpp"
 #include "../renderable.hpp"
 
+#ifndef __HEADER_RENDERER
 namespace dojo {
     class Renderer;
 }
+#endif
+
+#ifndef __HEADER_TEXTURE
+namespace dojo {
+    class Texture;
+}
+#endif
 
 namespace dojo {
 
@@ -49,5 +56,6 @@ class MenuItem : public Renderable {
 }
 
 #include "../../window/renderer.hpp"
+#include "../texture.hpp"
 
 #endif

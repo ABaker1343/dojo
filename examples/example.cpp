@@ -72,9 +72,9 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
     }
 
     if (_window->KEYS[GLFW_KEY_LEFT]) {
-        _camera->rotate(-20 * timePassed/1000.f, dojo::Camera::YAW);
+        _camera->rotate(-40 * timePassed/1000.f, dojo::Camera::YAW);
     } else if (_window->KEYS[GLFW_KEY_RIGHT]) {
-        _camera->rotate(20 * timePassed/1000.f, dojo::Camera::YAW);
+        _camera->rotate(40 * timePassed/1000.f, dojo::Camera::YAW);
     } else if (_window->KEYS[GLFW_KEY_UP]) {
         _camera->setPos(_camera->getPosition() + glm::vec3(0 ,0, -1 * movementSpeed));
     } else if (_window->KEYS[GLFW_KEY_DOWN]) {
@@ -83,6 +83,10 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
         _camera->setPos(_camera->getPosition() + glm::vec3(1 * movementSpeed, 0, 0));
     } else if (_window->KEYS[GLFW_KEY_J]) {
         _camera->setPos(_camera->getPosition() + glm::vec3(-1 * movementSpeed, 0 , 0));
+    } else if (_window->KEYS[GLFW_KEY_SPACE]) {
+        _camera->setPos(_camera->getPosition() + glm::vec3(0, 1 * movementSpeed , 0));
+    } else if (_window->KEYS[GLFW_KEY_Z]) {
+        _camera->setPos(_camera->getPosition() + glm::vec3(0, -1 * movementSpeed , 0));
     }
 
     if (_window->KEYS[GLFW_KEY_O]) {
@@ -115,21 +119,28 @@ int main() {
 
     std::cout << "created renderer" << std::endl;
 
+    std::cout << "created renderer" << std::endl;
     dojo::GameObject2DStatic *background = new dojo::GameObject2DStatic("Final/Social/test_2.png");
     background->setScale(glm::vec3(40, 20, 1));
     background->setPos(glm::vec3(0, 0, -10));
 
+    std::cout << "creating gameobject 2d animated" << std::endl;
     dojo::GameObject2DAnimated *obj1 = new dojo::GameObject2DAnimated("Enchantress/Idle.png", 1, 5, "Idle");
     obj1->addAnimation("Walking", "Enchantress/Walk.png", 1, 8);
     obj1->setScale(glm::vec3(3));
     obj1->setPos(glm::vec3(0, -5, 0));
+    std::cout << "creating collision box" << std::endl;
     dojo::BoxCollider *box1 = new dojo::BoxCollider(obj1->getPos(), obj1->getScale());
 
+    std::cout << "creating static 2d object" << std::endl;
     dojo::GameObject2DStatic *obj2 = new dojo::GameObject2DStatic("stick_man.png");
     obj2->setScale(glm::vec3(0.75));
     obj2->setPos(10, -5, 0);
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
+    std::cout << "creating 3d object" << std::endl;
+    dojo::GameObject3D *obj3d = new dojo::GameObject3D("../bench/Bench.obj");
 
+    std::cout << "creating menuItem" << std::endl;
     dojo::Texture* tex = new dojo::Texture(glm::ivec2(1800, 720));
     renderer->textToTexture(tex, "long string for a menu", glm::vec4(1));
     //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
@@ -150,12 +161,10 @@ int main() {
 
     while(running) {
         renderer->clear();
-        renderer->setShader("2DStatic");
         renderer->draw(cam, background);
         renderer->draw(cam, obj2);
-        renderer->setShader("2DAnimated");
         renderer->draw(cam, obj1);
-        renderer->setShader("menuShader");
+        renderer->draw(cam, obj3d);
         renderer->draw(menuItem);
         w->flipBuffers();
         w->pollEvents();
@@ -185,6 +194,8 @@ int main() {
     delete obj1;
     std::cout << "deleting object 2 static" << std::endl;
     delete obj2;
+    std::cout << "deleting object 3d" << std::endl;
+    delete obj3d;
     std::cout << "deleting menu item" << std::endl;
     delete menuItem;
     std::cout << "deleting boxes" << std::endl;

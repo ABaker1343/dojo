@@ -1,5 +1,6 @@
 #include "../../include/gameObjects/texture.hpp"
-#include <iostream>
+
+#include "../../include/stb_image.h"
 
 namespace dojo {
 
@@ -20,8 +21,8 @@ namespace dojo {
         glGenTextures(1, &m_Handle);
         glBindTexture(GL_TEXTURE_2D, m_Handle);
         //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-        unsigned char *data;
+        
+        unsigned char* data;
 
         if (_filepath.ends_with(".png")) {
             data = stbi_load(_filepath.c_str(), &m_Width, &m_Height, &m_NumChannels, STBI_rgb_alpha);

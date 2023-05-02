@@ -6,7 +6,9 @@
 #include <stdexcept>
 #include <glm/glm.hpp>
 
-#include "../stb_image.h"
+namespace dojo {
+    class FileHandler;
+}
 
 namespace dojo {
 

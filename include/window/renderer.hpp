@@ -20,6 +20,7 @@
 #include "../gameObjects/objects2D/gameObject2DAnimated.hpp"
 #include "../gameObjects/objects2D/gameObject2DStatic.hpp"
 #include "../gameObjects/menuItems/menuItem.hpp"
+#include "../gameObjects/objects3D/gameObject3D.hpp"
 
 namespace dojo{
 
@@ -38,6 +39,7 @@ class Renderer {
         void draw(Camera* _camera, Renderable* _object);
         void draw(Camera* _camera, GameObject2DStatic* _object);
         void draw(Camera* _camera, GameObject2DAnimated* _object);
+        void draw(Camera* _camera, GameObject3D* _object);
         void draw(MenuItem* _item);
         void draw(Camera* _camera, const std::string& _text);
 
