@@ -12,8 +12,11 @@ class Camera {
 
     public:
 
-        enum CameraDir {
+        enum CameraAxis {
             YAW, PITCH, ROLL
+        };
+        enum CameraDir {
+            FORWARD, RIGHT, UP
         };
 
     public:
@@ -21,8 +24,9 @@ class Camera {
         ~Camera();
 
         void setPos(glm::vec3 _pos);
+        void move(float _amount, CameraDir _dir);
         void lookAt(glm::vec3 _target);
-        void rotate(float degrees, CameraDir _dir);
+        void rotate(float degrees, CameraAxis _axis);
         
         glm::vec3 getPosition();
 

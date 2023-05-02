@@ -53,8 +53,8 @@ namespace dojo {
 
     }
 
-    void Camera::rotate(float _degrees, CameraDir _dir) {
-        switch(_dir) {
+    void Camera::rotate(float _degrees, CameraAxis _axis) {
+        switch(_axis) {
             case YAW:
                 m_yaw += _degrees;
                 break;
@@ -66,6 +66,22 @@ namespace dojo {
                 break;
         }
         updateVectors();
+    }
+
+    void Camera::move(float _amount, CameraDir _dir) {
+        glm::vec3 movement;
+        switch(_dir) {
+            case FORWARD:
+                movement = m_cameraFront * _amount;
+                break;
+            case RIGHT:
+                movement = m_cameraRight * _amount;
+                break;
+            case UP:
+                movement = m_cameraUp * _amount;
+                break;
+        }
+        setPos(getPosition() + movement);
     }
 
     glm::vec3 Camera::getPosition() {

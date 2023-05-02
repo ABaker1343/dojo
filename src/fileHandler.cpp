@@ -59,9 +59,6 @@ namespace dojo {
                 tempVerts.push_back(x);
                 tempVerts.push_back(y);
                 tempVerts.push_back(z);
-                if (stream.rdbuf()->in_avail() != 0) {
-                    
-                }
             } else if (identifier == "vt") {
                 // texture coord
                 float x, y;
@@ -83,10 +80,13 @@ namespace dojo {
                 currentMesh++;
                 meshes[currentMesh].setMaterial(materialMap[mat]);
             } else if (identifier == "f") {
-                for (int i = 0; i < 3; i++) {
+                int pointnum = 0;
+                unsigned int prev1vert, prev1tex, prev1norm;
+                unsigned int firstvert, firsttex, firstnorm;
+                while(stream.rdbuf()->in_avail()) {
                     std::string point;
                     stream >> point;
-                    
+
                     std::replace(point.begin(), point.end(), '/', ' ');
                     std::stringstream pointstream(point);
                     unsigned int vert, tex, norm;
@@ -96,15 +96,67 @@ namespace dojo {
                     tex = tex - 1;
                     norm = norm - 1;
 
-                    meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3]);
-                    meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3 + 1]);
-                    meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3 + 2]);
-                    meshes[currentMesh].getVertices()->push_back(tempTex[tex * 2]);
-                    meshes[currentMesh].getVertices()->push_back(tempTex[tex * 2 + 1]);
-                    meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3]);
-                    meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3 + 1]);
-                    meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3 + 2]);
+                    if (pointnum < 3) {
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3 + 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[tex * 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[tex * 2 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3 + 2]);
+
+                        switch (pointnum) {
+                            case 0:
+                                firstvert = vert;
+                                firsttex = tex;
+                                firstnorm = norm;
+                                break;
+                            case 2:
+                                prev1vert = vert;
+                                prev1tex = tex;
+                                prev1norm = norm;
+                        }
+
+                    } else {
+                        // use prev 2 to create a new triangle
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[firstvert * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[firstvert * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[firstvert * 3 + 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[firsttex * 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[firsttex * 2 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[firstnorm * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[firstnorm * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[firstnorm * 3 + 2]);
+
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[vert * 3 + 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[tex * 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[tex * 2 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[norm * 3 + 2]);
+
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[prev1vert * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[prev1vert * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempVerts[prev1vert * 3 + 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[prev1tex * 2]);
+                        meshes[currentMesh].getVertices()->push_back(tempTex[prev1tex * 2 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[prev1norm * 3]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[prev1norm * 3 + 1]);
+                        meshes[currentMesh].getVertices()->push_back(tempNorm[prev1norm * 3 + 2]);
+
+
+                        prev1vert = vert;
+                        prev1tex = tex;
+                        prev1norm = norm;
+
+                    }
+
+                    pointnum++;
                 }
+
             } else if (identifier == "mtllib") {
                 stream >> mtlfilepath;
                 loadMaterials(dirpath, mtlfilepath, materialMap);
@@ -163,8 +215,9 @@ namespace dojo {
             } else if (identifier == "map_Kd") {
                 std::string path;
                 stream >> path;
-                path = _dirpath + "/" + "textures/" + path;
+                path = _dirpath + "/" + path;
                 currentMat->kd_map = new Texture(path);
+                std::cout << path << std::endl;
             }
         }
     }

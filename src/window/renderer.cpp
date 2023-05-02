@@ -118,9 +118,12 @@ void Renderer::draw(Camera* _camera, GameObject3D* _object) {
 
     auto meshes = _object->getMeshes();
     for (unsigned int i = 0; i < meshes->size(); i++) {
-        glBindTexture(GL_TEXTURE_2D, meshes->at(i).getMaterial()->kd_map->getHandle());
+        Material* material = meshes->at(i).getMaterial();
+        setUniformVec3("in_ambient", material->ka);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material->kd_map->getHandle());
         glBindVertexArray(meshes->at(i).getVertexArray());
-        glDrawArrays(GL_TRIANGLES, 0, meshes->at(i).getVertexBufferSize() / 3);
+        glDrawArrays(GL_TRIANGLES, 0, meshes->at(i).getVertexBufferSize() / 8);
     }
     
 }

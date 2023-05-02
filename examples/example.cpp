@@ -19,7 +19,7 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
     float movementSpeed = 5 * (timePassed / 1000.f); // seconds
     float animationSpeed = 1000.f / 5.f; // frames per seconds
 
-    if (_window->KEYS[GLFW_KEY_D]) {
+    if (_window->KEYS[GLFW_KEY_RIGHT]) {
         if (_object->getFlip().x != dojo::GameObject2D::FACE_RIGHT) {
             _object->flipx();
         }
@@ -38,7 +38,7 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
         _object->setPos(_object->getPos() + glm::vec3(movementSpeed, 0, 0));
     }
 
-    else if (_window->KEYS[GLFW_KEY_A]) {
+    else if (_window->KEYS[GLFW_KEY_LEFT]) {
         if (_object->getFlip().x != dojo::GameObject2D::FACE_LEFT) {
             _object->flipx();
         }
@@ -71,22 +71,23 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
         }
     }
 
-    if (_window->KEYS[GLFW_KEY_LEFT]) {
-        _camera->rotate(-40 * timePassed/1000.f, dojo::Camera::YAW);
-    } else if (_window->KEYS[GLFW_KEY_RIGHT]) {
-        _camera->rotate(40 * timePassed/1000.f, dojo::Camera::YAW);
-    } else if (_window->KEYS[GLFW_KEY_UP]) {
-        _camera->setPos(_camera->getPosition() + glm::vec3(0 ,0, -1 * movementSpeed));
-    } else if (_window->KEYS[GLFW_KEY_DOWN]) {
-        _camera->setPos(_camera->getPosition() + glm::vec3(0, 0, 1 * movementSpeed));
-    } else if (_window->KEYS[GLFW_KEY_K]) {
-        _camera->setPos(_camera->getPosition() + glm::vec3(1 * movementSpeed, 0, 0));
-    } else if (_window->KEYS[GLFW_KEY_J]) {
-        _camera->setPos(_camera->getPosition() + glm::vec3(-1 * movementSpeed, 0 , 0));
-    } else if (_window->KEYS[GLFW_KEY_SPACE]) {
-        _camera->setPos(_camera->getPosition() + glm::vec3(0, 1 * movementSpeed , 0));
-    } else if (_window->KEYS[GLFW_KEY_Z]) {
-        _camera->setPos(_camera->getPosition() + glm::vec3(0, -1 * movementSpeed , 0));
+    float turnSpeed = 80;
+    if (_window->KEYS[GLFW_KEY_J]) {
+        _camera->rotate(turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
+    } if (_window->KEYS[GLFW_KEY_K]) {
+        _camera->rotate(-turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
+    } if (_window->KEYS[GLFW_KEY_W]) {
+        _camera->move(movementSpeed, dojo::Camera::FORWARD);
+    } if (_window->KEYS[GLFW_KEY_S]) {
+        _camera->move(-movementSpeed, dojo::Camera::FORWARD);
+    } if (_window->KEYS[GLFW_KEY_D]) {
+        _camera->move(movementSpeed, dojo::Camera::RIGHT);
+    } if (_window->KEYS[GLFW_KEY_A]) {
+        _camera->move(-movementSpeed, dojo::Camera::RIGHT);
+    } if (_window->KEYS[GLFW_KEY_SPACE]) {
+        _camera->move(movementSpeed, dojo::Camera::UP);
+    } if (_window->KEYS[GLFW_KEY_Z]) {
+        _camera->move(-movementSpeed, dojo::Camera::UP);
     }
 
     if (_window->KEYS[GLFW_KEY_O]) {
@@ -138,7 +139,10 @@ int main() {
     obj2->setPos(10, -5, 0);
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
     std::cout << "creating 3d object" << std::endl;
-    dojo::GameObject3D *obj3d = new dojo::GameObject3D("../bench/Bench.obj");
+    dojo::GameObject3D *obj3d = new dojo::GameObject3D("PS1MemoryCard_OBJ/MemoryCard.obj");
+    dojo::GameObject3D *obj3d2 = new dojo::GameObject3D("../bench/Bench.obj");
+    obj3d2->setScale(glm::vec3(0.2));
+    obj3d2->setPos(glm::vec3(-10, 0, 0));
 
     std::cout << "creating menuItem" << std::endl;
     dojo::Texture* tex = new dojo::Texture(glm::ivec2(1800, 720));
@@ -165,6 +169,7 @@ int main() {
         renderer->draw(cam, obj2);
         renderer->draw(cam, obj1);
         renderer->draw(cam, obj3d);
+        renderer->draw(cam, obj3d2);
         renderer->draw(menuItem);
         w->flipBuffers();
         w->pollEvents();
@@ -196,6 +201,7 @@ int main() {
     delete obj2;
     std::cout << "deleting object 3d" << std::endl;
     delete obj3d;
+    delete obj3d2;
     std::cout << "deleting menu item" << std::endl;
     delete menuItem;
     std::cout << "deleting boxes" << std::endl;

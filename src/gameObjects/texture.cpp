@@ -33,7 +33,7 @@ namespace dojo {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         }
 
-        else if (_filepath.ends_with(".jpg")) {
+        else if (_filepath.ends_with(".jpg") || _filepath.ends_with("jpeg")) {
             data = stbi_load(_filepath.c_str(), &m_Width, &m_Height, &m_NumChannels, STBI_rgb);
             if (!data) {
                 stbi_image_free(data);
