@@ -55,17 +55,7 @@ void Placement::run() {
     m_selectedObject = m_objects[0];
     m_selectedObject->setColor(m_selectedColor);
 
-    unsigned int selectCallback = m_window->setCustomKeyCallback([this](int _key, int _scancode, int _action, int _mods) {
-                if (_action == GLFW_PRESS && _key == GLFW_KEY_N) {
-                    m_selectedObject->setColor(m_defaultColor);
-                    m_selectedIndex++;
-                    if (m_selectedIndex >= m_objects.size()) {
-                        m_selectedIndex = 0;
-                    }
-                    m_selectedObject = m_objects[m_selectedIndex];
-                    m_selectedObject->setColor(m_selectedColor);
-                }
-            });
+    unsigned int keyCallback = bindKeyCallback();
 
     while(!m_window->shouldClose()) {
         m_window->pollEvents();
@@ -81,7 +71,7 @@ void Placement::run() {
         m_window->flipBuffers();
     }
 
-    m_window->removeKeyCallback(selectCallback);
+    m_window->removeKeyCallback(keyCallback);
 
 }
 
@@ -98,7 +88,6 @@ void Placement::update() {
     if (m_window->KEYS[GLFW_KEY_D]) {
         m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(+0.1, 0, 0));
     }
-
     if (m_window->KEYS[GLFW_KEY_UP]) {
         m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(0, 0, -0.1));
         m_cameraWrap->updateInfo(m_renderer.get());
@@ -116,4 +105,30 @@ void Placement::update() {
         m_cameraWrap->updateInfo(m_renderer.get());
     }
 
+
+}
+
+unsigned int Placement::bindKeyCallback() {
+    dojo::KeyCallbackFunction callback = [this](int _key, int _scancode, int _action, int _mods) {
+        switch(_action) {
+            case GLFW_PRESS: {
+                switch(_key) {
+                    case GLFW_KEY_N: {
+                        m_selectedObject->setColor(m_defaultColor);
+                        m_selectedIndex++;
+                        if (m_selectedIndex >= m_objects.size()) {
+                            m_selectedIndex = 0;
+                        }
+                        m_selectedObject = m_objects[m_selectedIndex];
+                        m_selectedObject->setColor(m_selectedColor);
+                    }
+                }
+                }
+            }
+            };
+
+    
+    unsigned int callbackHandle = m_window->setCustomKeyCallback(callback);
+
+    return callbackHandle;
 }

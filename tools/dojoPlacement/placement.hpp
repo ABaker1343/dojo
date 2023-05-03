@@ -39,4 +39,6 @@ class Placement {
     
         void update();
 
+        unsigned int bindKeyCallback();
+
 };

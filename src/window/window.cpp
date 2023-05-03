@@ -19,16 +19,6 @@ bool Window::m_usingDefaultResizeCallback = true;
 
 std::vector<Renderer*> Window::m_ActiveRenderers = std::vector<Renderer*>();
 
-
-/*KeyCallback Window::m_defaultKeyCallback = [](int _key, int _scancode, int _action, int _mode) -> void {
-    if (_action == GLFW_PRESS) {
-        KEYS[_key] = true;
-    }
-    if (_action == GLFW_RELEASE) {
-        KEYS[_key] = false;
-    }
-};*/
-
 Window::Window(int _width, int _height, const std::string& _title){
 
     initWindow(_width, _height, _title);
