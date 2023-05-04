@@ -21,6 +21,7 @@
 #include "../gameObjects/objects2D/gameObject2DStatic.hpp"
 #include "../gameObjects/menuItems/menuItem.hpp"
 #include "../gameObjects/objects3D/gameObject3D.hpp"
+#include "../gameObjects/lights/light.hpp"
 
 namespace dojo{
 
@@ -44,10 +45,16 @@ class Renderer {
         void draw(MenuItem* _item);
         void draw(Camera* _camera, const std::string& _text);
 
+        void drawLit(Camera* _camera, GameObject3D* _object, Light* light);
+
+        void drawShadow(Light* _light, GameObject3D* _object);
+        void drawShadow(Light* _light, GameObject2D* _object);
+
         void textToTexture(Texture* _texture, const std::string& _text, glm::vec4 _textColor = glm::vec4(0, 0, 0, 1), glm::vec3 _backgroundColor = glm::vec3(0.5));
         void drawText(Camera* _camera, const std::string& _text, glm::vec3 _pos, float _scale, glm::vec4 _color);
 
         void clear();
+        void clearShadow(Light* _light);
         void setShader(const std::string& _shader);
         void setShaderPath(const std::string& _shaderPath);
         void loadShaders();
@@ -75,6 +82,8 @@ class Renderer {
         unsigned int m_textVertexArray;
         unsigned int m_textVertexBuffer;
 
+        unsigned int m_shadowFramebuffer;
+
         std::map<std::string, unsigned int> m_Shaders;
         std::map<char, FontCharacter> m_fontMapTerm;
 
@@ -87,6 +96,7 @@ class Renderer {
         void setUniformInt(const char* _name, int _value);
 
         void makeTextureRenderDependancies();
+        void makeShadowDependencies();
         void initFreetype();
 
         

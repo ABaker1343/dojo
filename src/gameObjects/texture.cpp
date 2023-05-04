@@ -75,6 +75,29 @@ namespace dojo {
 
     }
 
+    Texture::Texture(glm::ivec2 _size, Use _use) {
+        m_Width = _size.x;
+        m_Height = _size.y;
+
+        // set the wrap parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
+        // filtering
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        // generate texture
+        glGenTextures(1, &m_Handle);
+        glBindTexture(GL_TEXTURE_2D, m_Handle);
+        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_Width, m_Height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+    }
+
     Texture::~Texture() {
         glDeleteTextures(1, &m_Handle);
     }

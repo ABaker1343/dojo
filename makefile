@@ -1,7 +1,7 @@
 CC=g++ --std=c++20
 FLAGS=-Wall -lGL -lglfw $(shell pkg-config --cflags freetype2)
 
-SOURCE=$(wildcard src/*.cpp) $(wildcard src/window/*.cpp) $(wildcard src/gameObjects/*.cpp) $(wildcard src/gameObjects/objects2D/*.cpp) $(wildcard src/gameObjects/colliders/*.cpp) $(wildcard src/gameObjects/menuItems/*.cpp) $(wildcard src/gameObjects/objects3D/*.cpp)
+SOURCE=$(wildcard src/*.cpp) $(wildcard src/window/*.cpp) $(wildcard src/gameObjects/*.cpp) $(wildcard src/gameObjects/objects2D/*.cpp) $(wildcard src/gameObjects/colliders/*.cpp) $(wildcard src/gameObjects/menuItems/*.cpp) $(wildcard src/gameObjects/objects3D/*.cpp) $(wildcard src/gameObjects/lights/light.cpp)
 
 #HEADERS=$(wildcard headers/*.hpp) $(wildcard window/headers/*.hpp) $(wildcard gameObjects/headers/*.hpp) $(wildcard gameObjects/headers/objects2D/*.cpp) $(wildcard gameObjects/headers/colliders/*.hpp) $(wildcard gameObjects/headers/menuItems/*.hpp)
 

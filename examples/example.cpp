@@ -7,7 +7,7 @@ void printvec(glm::vec3 _vec) {
     std::cout << _vec.x << " " << _vec.y << " " << _vec.z << std::endl;
 }
 
-void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, dojo::Camera* _camera) {
+void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, dojo::Camera* _camera, dojo::Light* _light) {
 
     static auto lastUpdateTime = std::chrono::steady_clock::now();
     static auto lastAnimationTime = lastUpdateTime;
@@ -96,6 +96,19 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
         _camera->makePerspective();
     }
 
+    if (_window->KEYS[GLFW_KEY_M]) {
+        _light->setPos(_light->getPos() + glm::vec3(0, 0, -0.05));
+    }
+    if (_window->KEYS[GLFW_KEY_N]) {
+        _light->setPos(_light->getPos() + glm::vec3(0, 0, 0.05));
+    }
+    if (_window->KEYS[GLFW_KEY_V]) {
+        _light->setPos(_light->getPos() + glm::vec3(0, -0.05, 0));
+    }
+    if (_window->KEYS[GLFW_KEY_B]) {
+        _light->setPos(_light->getPos() + glm::vec3(0, 0.05, 0));
+    }
+
     lastUpdateTime = std::chrono::steady_clock::now();
 }
 
@@ -144,13 +157,18 @@ int main() {
     obj3d2->setScale(glm::vec3(0.2));
     obj3d2->setPos(glm::vec3(-10, 0, 0));
 
+    dojo::Light* light = new dojo::Light();
+    light->setPos(obj3d2->getPos());
+    light->setTarget(glm::vec3(0));
+    dojo::GameObject3D *lightfollow = new dojo::GameObject3D("PS1MemoryCard_OBJ/MemoryCard.obj");
+    lightfollow->setScale(glm::vec3(0.2));
+
     std::cout << "creating menuItem" << std::endl;
     dojo::Texture* tex = new dojo::Texture(glm::ivec2(1800, 720));
     renderer->textToTexture(tex, "long string for a menu", glm::vec4(1));
     //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
-    //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), tex);
+    dojo::MenuItem* shadowViewer = new dojo::MenuItem(glm::vec2(0.1, 0.1), glm::vec2(0.4, 0.4), light->getShadowMap());
     dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), "long string for a menu", renderer);
-
 
     //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");
     //renderer->setShader("2DStatic");
@@ -165,12 +183,24 @@ int main() {
 
     while(running) {
         renderer->clear();
+        renderer->clearShadow(light);
+    
+        renderer->drawShadow(light, background);
+        renderer->drawShadow(light, obj2);
+        renderer->drawShadow(light, obj1);
+        renderer->drawShadow(light, obj3d);
+        renderer->drawShadow(light, obj3d2);
+
         renderer->draw(cam, background);
         renderer->draw(cam, obj2);
         renderer->draw(cam, obj1);
-        renderer->draw(cam, obj3d);
-        renderer->draw(cam, obj3d2);
+        renderer->draw(cam, lightfollow);
+
+        renderer->drawLit(cam, obj3d, light);
+        renderer->drawLit(cam, obj3d2, light);
+        
         renderer->draw(menuItem);
+        renderer->draw(shadowViewer);
         w->flipBuffers();
         w->pollEvents();
         if (w->KEYS[GLFW_KEY_ESCAPE]) {
@@ -178,13 +208,14 @@ int main() {
         }
 
         box1->setCenter(obj1->getPos());
+        lightfollow->setPos(light->getPos());
 
         if (box1->isColliding(box2)) {
             std::cout << "collidong" << std::endl;
             box2->snapToSide(obj1, dojo::BoxCollider::Side::LEFT);
         }
 
-        HandleInputs(w, obj1, cam);
+        HandleInputs(w, obj1, cam, light);
         obj2->flipx();
 
         frames ++;
@@ -202,6 +233,8 @@ int main() {
     std::cout << "deleting object 3d" << std::endl;
     delete obj3d;
     delete obj3d2;
+    std::cout << "deleting light item" << std::endl;
+    delete light;
     std::cout << "deleting menu item" << std::endl;
     delete menuItem;
     std::cout << "deleting boxes" << std::endl;

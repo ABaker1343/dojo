@@ -27,6 +27,7 @@ Renderer::Renderer(Window* _window, glm::vec2 _VPPos, glm::vec2 _VPSize) {
 
     // generate framebuffers
     makeTextureRenderDependancies();
+    makeShadowDependencies();
     
 }
 
@@ -44,6 +45,14 @@ Window* Renderer::getWindow() {
 
 void Renderer::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::clearShadow(Light* _light) {
+    glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFramebuffer);
+    glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _light->getShadowMap()->getHandle(), 0);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::draw(Camera* _camera, Renderable* _object) {
@@ -70,7 +79,9 @@ void Renderer::draw(Camera* _camera, GameObject2DStatic* _object) {
     if (m_useDefaultShaders) setShader("2DStatic");
 
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
+    setUniformInt("in_texture", 0);
 
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
     setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
@@ -87,7 +98,9 @@ void Renderer::draw(Camera* _camera, GameObject2DAnimated* _object) {
     if (m_useDefaultShaders) setShader("2DAnimated");
 
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _object->getTexture()->getHandle());
+    setUniformInt("in_texture", 0);
 
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
     setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
@@ -111,14 +124,7 @@ void Renderer::draw(Camera* _camera, GameObject3D* _object) {
     setUniformMat4("in_worldTransform", _object->getWorldTransform());
     setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
     setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
-
-    /*for (std::vector<Mesh>::iterator it = _object->getMeshes()->begin(); it != _object->getMeshes()->end(); it++) {
-        glBindTexture(GL_TEXTURE_2D, it->getMaterial()->kd_map->getHandle());
-        glBindVertexArray(it->getVertexArray());
-        glDrawArrays(GL_TRIANGLES, 0, it->getVertices()->size() / 3);
-        std::cout << "vertex buffer size from renderer: " << it->getVertexBufferSize() << std::endl;
-        std::cout << "vertex array from renderer: " << it->getVertexArray() << std::endl;
-    }*/
+    setUniformInt("in_texture", 0);
 
     auto meshes = _object->getMeshes();
     for (unsigned int i = 0; i < meshes->size(); i++) {
@@ -132,12 +138,44 @@ void Renderer::draw(Camera* _camera, GameObject3D* _object) {
     
 }
 
+void Renderer::drawLit(Camera* _camera, GameObject3D* _object, Light* _light) {
+    if (m_useDefaultShaders) setShader("3Dlit");
+
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+
+    setUniformMat4("in_worldTransform", _object->getWorldTransform());
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+
+    setUniformMat4("in_lightTransform", _light->getLightTransform());
+    setUniformMat4("in_lightProjection", _light->getProjectionTransform());
+
+    setUniformInt("in_texture", 0);
+    setUniformInt("in_shadowMap", 1);
+
+    auto meshes = _object->getMeshes();
+    for (unsigned int i = 0; i < meshes->size(); i++) {
+        Material* material = meshes->at(i).getMaterial();
+        setUniformVec3("in_ambient", material->ka);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material->kd_map->getHandle());
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
+
+        glBindVertexArray(meshes->at(i).getVertexArray());
+        glDrawArrays(GL_TRIANGLES, 0, meshes->at(i).getVertexBufferSize() / 8);
+    }
+}
+
 void Renderer::draw(MenuItem* _item) {
     
     if (m_useDefaultShaders) setShader("menuShader");
 
     glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _item->getTexture()->getHandle());
+    setUniformInt("in_texture", 0);
     setUniformVec4("in_location", _item->getLocation());
 
     glBindVertexArray(_item->getVertexArray());
@@ -290,6 +328,65 @@ void Renderer::drawMenuText(const std::string& _text, float _x, float _y, float 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void Renderer::drawShadow(Light* _light, GameObject2D* _object) {
+    glm::vec2 shadowMapSize = _light->getShadowMap()->getSize();
+    glViewport(0, 0, shadowMapSize.x, shadowMapSize.y);
+
+    setShader("shadowMap");
+
+    setUniformMat4("in_worldTransform", _object->getWorldTransform());
+    setUniformMat4("in_lightTransform", _light->getLightTransform());
+    setUniformMat4("in_projectionTransform", _light->getProjectionTransform());
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFramebuffer);
+    glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _light->getShadowMap()->getHandle(), 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        //throw std::runtime_error("incomplete framebuffer when rendering to texture");
+    //}
+
+    glBindVertexArray(_object->getVertexArray());
+    glDrawArrays(GL_TRIANGLES, 0, _object->getVertexBufferSize() / 3);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::drawShadow(Light* _light, GameObject3D* _object) {
+    glm::vec2 shadowMapSize = _light->getShadowMap()->getSize();
+    glViewport(0, 0, shadowMapSize.x, shadowMapSize.y);
+
+    setShader("shadowMap");
+
+    setUniformMat4("in_worldTransform", _object->getWorldTransform());
+    setUniformMat4("in_lightTransform", _light->getLightTransform());
+    setUniformMat4("in_projectionTransform", _light->getProjectionTransform());
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFramebuffer);
+    glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _light->getShadowMap()->getHandle(), 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        //throw std::runtime_error("incomplete framebuffer when rendering to texture");
+    //}
+
+    auto meshes = _object->getMeshes();
+    for (unsigned int i = 0; i < meshes->size(); i++) {
+        Material* material = meshes->at(i).getMaterial();
+        setUniformVec3("in_ambient", material->ka);
+        //glActiveTexture(GL_TEXTURE0);
+        //glBindTexture(GL_TEXTURE_2D, material->kd_map->getHandle());
+        glBindVertexArray(meshes->at(i).getVertexArray());
+        glDrawArrays(GL_TRIANGLES, 0, meshes->at(i).getVertexBufferSize() / 8);
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Renderer::setUniformMat4(const char* _name, glm::mat4 _value) {
     unsigned int loc = glGetUniformLocation(m_CurrentShader, _name);
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(_value));
@@ -329,7 +426,7 @@ void Renderer::setShaderPath(const std::string& _shaderPath) {
 
 void Renderer::loadShaders() {
     // load the shaders to use
-    std::vector<std::string> shaderNames = {"default", "2DAnimated", "2DStatic", "menuShader", "textShader", "default3D"};
+    std::vector<std::string> shaderNames = {"default", "2DAnimated", "2DStatic", "menuShader", "textShader", "default3D", "shadowMap", "3Dlit"};
 
     for (const std::string& shader : shaderNames) {
         // load the shader
@@ -386,6 +483,9 @@ void Renderer::loadShaders() {
 
 void Renderer::makeTextureRenderDependancies() {
     glGenFramebuffers(1, &m_textureFramebuffer);
+}
+void Renderer::makeShadowDependencies() {
+    glGenFramebuffers(1, &m_shadowFramebuffer);
 }
 
 void Renderer::initFreetype() {

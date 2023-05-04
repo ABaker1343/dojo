@@ -12,10 +12,19 @@ namespace dojo {
 
 namespace dojo {
 
+
 class Texture {
+    public:
+
+        enum Use {
+            RENDER,
+            DEPTH_MAP,
+        };
+
     public:
         Texture(const std::string& _filepath);
         Texture(glm::ivec2 _size);
+        Texture(glm::ivec2 _size, Use _use);
         ~Texture();
 
         unsigned int getHandle();
