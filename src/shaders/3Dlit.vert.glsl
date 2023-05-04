@@ -12,7 +12,7 @@ uniform mat4 in_lightTransform;
 uniform mat4 in_lightProjection;
 
 out vec2 frag_tex;
-out vec3 frag_lightspace;
+out vec4 frag_lightspace;
 
 void main() {
     vec4 position = in_projectionTransform * in_cameraTransform * in_worldTransform * vec4(in_pos, 1.0);
@@ -20,5 +20,5 @@ void main() {
     gl_Position = position;
     
     frag_tex = in_tex;
-    frag_lightspace = lightSpace.xyz;
+    frag_lightspace = lightSpace;
     }

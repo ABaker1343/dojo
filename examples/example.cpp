@@ -170,9 +170,6 @@ int main() {
     dojo::MenuItem* shadowViewer = new dojo::MenuItem(glm::vec2(0.1, 0.1), glm::vec2(0.4, 0.4), light->getShadowMap());
     dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), "long string for a menu", renderer);
 
-    //dojo::GameObject2DStatic *obj = new dojo::GameObject2DStatic("stick_man.jpg");
-    //renderer->setShader("2DStatic");
-    
     std::cout << "created game object" << std::endl;
 
     bool running = true;
