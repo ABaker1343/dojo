@@ -37,6 +37,7 @@ class Renderer {
         ~Renderer();
 
         void draw(Camera* _camera, Renderable* _object);
+        void draw(Camera* _camera, GameObject* _object);
         void draw(Camera* _camera, GameObject2DStatic* _object);
         void draw(Camera* _camera, GameObject2DAnimated* _object);
         void draw(Camera* _camera, GameObject3D* _object);

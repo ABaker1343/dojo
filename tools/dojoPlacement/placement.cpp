@@ -1,22 +1,5 @@
 #include "placement.hpp"
 
-Placement::CameraWrapper::CameraWrapper(dojo::Renderer* _renderer) {
-    m_camera = std::make_unique<dojo::Camera>();
-    m_camera->setPos(glm::vec3(0, 0, 5));
-    m_camera->lookAt(glm::vec3(0));
-
-    dojo::Texture* infotexture = new dojo::Texture(glm::vec2(500, 200));
-    m_info = std::make_unique<dojo::MenuItem>(glm::vec2(0.75, 0), glm::vec2(0.25, 0.05), infotexture);
-
-    updateInfo(_renderer);
-}
-
-void Placement::CameraWrapper::updateInfo(dojo::Renderer* _renderer) {
-    std::stringstream stream;
-    stream << "CameraPos: " << m_camera->getPosition();
-    _renderer->textToTexture(m_info->getTexture(), stream.str(), glm::vec4(0.7, 0.7, 1, 1));
-}
-
 Placement::Placement(int argc, const char* argv[]) {
     m_window = std::make_unique<dojo::Window>(1280, 720, "dojo plcement");
     m_renderer = std::make_unique<dojo::Renderer>(m_window.get());
@@ -24,21 +7,24 @@ Placement::Placement(int argc, const char* argv[]) {
     m_renderer->loadShaders();
     m_cameraWrap = std::make_unique<CameraWrapper>(m_renderer.get());
 
-    auto rendererRawPointer = m_renderer.get();
-    m_window->setCustomResizeCallback([rendererRawPointer](int _x, int _y){
-                rendererRawPointer->resize();
+    m_window->setCustomResizeCallback([this](int _x, int _y){
+                m_renderer->resize();
             });
 
     m_objects = std::vector<ObjectWrapper*>();
 
+    m_menuStackHeight = 0.05;
     for (int i = 1; i < argc; i++) {
         const std::string path(argv[i]);
-        ObjectWrapper* newObject = new ObjectWrapper(path, glm::vec2(0.75, 1-0.05*i), m_renderer.get());
+        ObjectWrapper* newObject = new ObjectWrapper(path, glm::vec2(0.75, 1-m_menuStackHeight), m_renderer.get());
+        m_menuStackHeight += 0.05;
         newObject->setPos(glm::vec3(0));
         newObject->setScale(glm::vec3(1));
 
         m_objects.push_back(newObject);
     }
+
+    m_createButton = std::make_unique<dojo::MenuItem>(glm::vec2(0.05), glm::vec2(0.1), "New", m_renderer.get());
 
     m_defaultColor = glm::vec4(1);
     m_selectedColor = glm::vec4(1, 0.5, 0.5, 1.0);
@@ -56,56 +42,86 @@ void Placement::run() {
     m_selectedObject->setColor(m_selectedColor);
 
     unsigned int keyCallback = bindKeyCallback();
+    unsigned int buttonCallback = bindButtonCallback();
 
     while(!m_window->shouldClose()) {
         m_window->pollEvents();
         update();
-        m_renderer->clear();
-        for (size_t i = 0; i < m_objects.size(); i++) {
-            m_renderer->draw(m_cameraWrap->m_camera.get(), m_objects[i]->getObject());
-        }
-        for (size_t i = 0; i < m_objects.size(); i++) {
-            m_renderer->draw(m_objects[i]->getInfoItem());
-        }
-        m_renderer->draw(m_cameraWrap->m_info.get());
+        render();
         m_window->flipBuffers();
     }
 
     m_window->removeKeyCallback(keyCallback);
+    m_window->removeMouseCallback(buttonCallback);
 
 }
 
 void Placement::update() {
-    if (m_window->KEYS[GLFW_KEY_W]) {
-        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(0, 0.1, 0));
-    }
-    if (m_window->KEYS[GLFW_KEY_S]) {
-        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(0, -0.1, 0));
-    }
-    if (m_window->KEYS[GLFW_KEY_A]) {
-        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(-0.1, 0, 0));
-    }
-    if (m_window->KEYS[GLFW_KEY_D]) {
-        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(+0.1, 0, 0));
-    }
+    static auto lastUpdateTime = std::chrono::steady_clock::now();
+    auto msSinceUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - lastUpdateTime).count();
+
+    float movementSpeed = msSinceUpdate * 0.005;
+
     if (m_window->KEYS[GLFW_KEY_UP]) {
-        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(0, 0, -0.1));
-        m_cameraWrap->updateInfo(m_renderer.get());
+        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(0, movementSpeed, 0));
     }
     if (m_window->KEYS[GLFW_KEY_DOWN]) {
-        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(0, 0, 0.1));
-        m_cameraWrap->updateInfo(m_renderer.get());
+        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(0, -movementSpeed, 0));
     }
     if (m_window->KEYS[GLFW_KEY_LEFT]) {
-        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(-0.1, 0, 0));
-        m_cameraWrap->updateInfo(m_renderer.get());
+        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(-movementSpeed, 0, 0));
     }
     if (m_window->KEYS[GLFW_KEY_RIGHT]) {
-        m_cameraWrap->m_camera->setPos(m_cameraWrap->m_camera->getPosition() + glm::vec3(0.1, 0, 0));
-        m_cameraWrap->updateInfo(m_renderer.get());
+        m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(movementSpeed, 0, 0));
+    }
+    if (m_window->KEYS[GLFW_KEY_W]) {
+        m_cameraWrap->move(movementSpeed, dojo::Camera::FORWARD, m_renderer.get());
+    }
+    if (m_window->KEYS[GLFW_KEY_S]) {
+        m_cameraWrap->move(-movementSpeed, dojo::Camera::FORWARD, m_renderer.get());
+    }
+    if (m_window->KEYS[GLFW_KEY_A]) {
+        m_cameraWrap->move(-movementSpeed, dojo::Camera::RIGHT, m_renderer.get());
+    }
+    if (m_window->KEYS[GLFW_KEY_D]) {
+        m_cameraWrap->move(movementSpeed, dojo::Camera::RIGHT, m_renderer.get());
     }
 
+    lastUpdateTime = std::chrono::steady_clock::now();
 
+
+}
+
+void Placement::render() {
+    m_renderer->clear();
+    for (size_t i = 0; i < m_objects.size(); i++) {
+        auto object = m_objects[i];
+        switch(object->getType()) {
+            case ObjectWrapper::OBJECT_3D:
+                m_renderer->draw(m_cameraWrap->m_camera.get(), (dojo::GameObject3D*)m_objects[i]->getObject());
+                break;
+            case ObjectWrapper::OBJECT_2D_STATIC:
+                m_renderer->draw(m_cameraWrap->m_camera.get(), (dojo::GameObject2DStatic*)m_objects[i]->getObject());
+                break;
+            case ObjectWrapper::OBJECT_2D_ANIMATED:
+                m_renderer->draw(m_cameraWrap->m_camera.get(), (dojo::GameObject2DAnimated*)m_objects[i]->getObject());
+                break;
+        }
+    }
+    for (size_t i = 0; i < m_objects.size(); i++) {
+        m_renderer->draw(m_objects[i]->getInfoItem());
+    }
+    m_renderer->draw(m_cameraWrap->m_info.get());
+    m_renderer->draw(m_createButton.get());
+}
+
+ObjectWrapper* Placement::createObject() {
+    dojo::GameObject3D* newObject;
+    newObject = new dojo::GameObject3D("memCard/MemoryCard.obj");
+    ObjectWrapper* wrapper = new ObjectWrapper(newObject, ObjectWrapper::OBJECT_3D, glm::vec2(0.75, 1 - m_menuStackHeight), m_renderer.get());
+    m_menuStackHeight += 0.05;
+
+    return wrapper;
 }
 
 unsigned int Placement::bindKeyCallback() {
@@ -128,7 +144,23 @@ unsigned int Placement::bindKeyCallback() {
             };
 
     
-    unsigned int callbackHandle = m_window->setCustomKeyCallback(callback);
+    return m_window->setCustomKeyCallback(callback);
+}
 
-    return callbackHandle;
+unsigned int Placement::bindButtonCallback() {
+    dojo::MouseCallbackFunction callback = [this](int _button, int _action, int _mods) {
+        glm::vec2 mousePos = m_window->getMousePos();
+        glm::vec2 windowSize = m_window->getDimensions();
+        switch(_action) {
+            case GLFW_PRESS:
+                std::cout << "mouse click" << std::endl;
+                if (m_createButton->isMouseOver(windowSize, mousePos)) {
+                    std::cout << "button pressed" << std::endl;
+                    m_objects.push_back(createObject());
+                }
+                break;
+        }
+    };
+    
+    return m_window->setCustomMouseCallback(callback);
 }

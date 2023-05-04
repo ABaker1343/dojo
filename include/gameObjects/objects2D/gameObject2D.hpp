@@ -14,6 +14,8 @@ class GameObject2D : public GameObject, public Renderable {
     public:
         GameObject2D();
         ~GameObject2D();
+        
+        std::unique_ptr<GameObject> clone() override;
 
         void setPos(glm::vec3 _pos) override;
         void setPos(float _x, float _y, float _z) override;

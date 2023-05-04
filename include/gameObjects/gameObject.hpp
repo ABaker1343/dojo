@@ -2,6 +2,7 @@
 #define __HEADER_GAME_OBJECT
 
 #include <glm/glm.hpp>
+#include <memory>
 
 
 namespace dojo {
@@ -9,6 +10,7 @@ namespace dojo {
 class GameObject {
     public:
         virtual ~GameObject() {};
+        virtual std::unique_ptr<GameObject> clone() = 0;
         virtual void setPos(glm::vec3 _pos) = 0;
         virtual void setPos(float _x, float _y, float _z) = 0;
         virtual void setScale(glm::vec3 _scale) = 0;

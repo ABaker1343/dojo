@@ -15,6 +15,10 @@ namespace dojo {
         }
     }
 
+    std::unique_ptr<GameObject> GameObject2DAnimated::clone() {
+        return std::make_unique<GameObject2DAnimated>( *this );
+    }
+
     void GameObject2DAnimated::addAnimation(const std::string& _name, const std::string& _animationPath, int _textureRows, int _numFrames) {
         Animation newAnimation = Animation();
 

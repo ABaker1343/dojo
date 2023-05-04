@@ -9,6 +9,10 @@ namespace dojo {
     GameObject2DStatic::~GameObject2DStatic() {
         delete m_Texture;
     }
+
+    std::unique_ptr<GameObject> GameObject2DStatic::clone() {
+        return std::make_unique<GameObject2DStatic>( *this );
+    }
     
     Texture* GameObject2DStatic::getTexture() {
         return m_Texture;

@@ -15,6 +15,8 @@ class GameObject2DStatic : public GameObject2D {
         GameObject2DStatic(const std::string& _texturePath);
         ~GameObject2DStatic();
 
+        std::unique_ptr<GameObject> clone();
+
         void setTexture(const std::string& _texturePath);
         Texture* getTexture();
 

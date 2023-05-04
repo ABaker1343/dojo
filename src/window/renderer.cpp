@@ -61,6 +61,10 @@ void Renderer::draw(Camera* _camera, Renderable* _object) {
     glDrawArrays(GL_TRIANGLES, 0, _object->getVertexBufferSize() / 3);
 }
 
+void Renderer::draw(Camera* _camera, GameObject* _object) {
+    // gameobjects are not renderable but this function is needed when using them generically
+}
+
 void Renderer::draw(Camera* _camera, GameObject2DStatic* _object) {
 
     if (m_useDefaultShaders) setShader("2DStatic");

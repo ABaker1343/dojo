@@ -166,6 +166,7 @@ namespace dojo {
         for (unsigned int i = 0; i < meshes.size(); i++){
             meshes[i].createBuffers();
         }
+        std::cout << "loaded meshes" << std::endl;
         return meshes;
     }
 

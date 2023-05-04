@@ -14,6 +14,7 @@ namespace dojo {
     public:
         GameObject3D(const std::string& _filepath);
         ~GameObject3D();
+        std::unique_ptr<GameObject> clone() override;
 
         void setPos(glm::vec3 _pos) override;
         void setPos(float _x, float _y, float _z) override;

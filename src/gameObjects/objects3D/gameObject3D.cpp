@@ -19,6 +19,10 @@ namespace dojo {
 
     }
 
+    std::unique_ptr<GameObject> GameObject3D::clone() {
+        return std::make_unique<GameObject3D>(*this);
+    }
+
     void GameObject3D::setPos(glm::vec3 _pos) {
         m_worldTransform[3][0] = _pos.x;
         m_worldTransform[3][1] = _pos.y;

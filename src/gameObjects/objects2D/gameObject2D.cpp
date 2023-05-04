@@ -24,6 +24,10 @@ namespace dojo {
         m_Flip = glm::ivec2(1,1);
     }
 
+    std::unique_ptr<GameObject> GameObject2D::clone() {
+        return std::make_unique<GameObject2D>( *this );
+    }
+
     void GameObject2D::createBuffers() {
         glGenBuffers(1, &m_vertexBuffer);
         glGenVertexArrays(1, &m_vertexArrayObject);

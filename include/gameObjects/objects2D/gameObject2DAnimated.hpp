@@ -21,6 +21,7 @@ class GameObject2DAnimated : public GameObject2D {
     public:
         GameObject2DAnimated(const std::string& _texturePath, int _textureRows, int _numFrames, const std::string& _name = "default");
         ~GameObject2DAnimated();
+        std::unique_ptr<GameObject> clone();
 
         void addAnimation(const std::string& _name, const std::string& _animationPath, int _textureRows, int _numFrames);
         bool setAnimation(const std::string& _name);
