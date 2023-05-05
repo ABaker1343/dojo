@@ -11,14 +11,23 @@ uniform mat4 in_projectionTransform;
 uniform mat4 in_lightTransform;
 uniform mat4 in_lightProjection;
 
-out vec2 frag_tex;
-out vec4 frag_lightspace;
+struct vertOut {
+    vec2 tex;
+    vec4 worldspace;
+    vec4 lightspace;
+    vec3 normal;
+};
+
+out vertOut fragin;
 
 void main() {
-    vec4 position = in_projectionTransform * in_cameraTransform * in_worldTransform * vec4(in_pos, 1.0);
-    vec4 lightSpace = in_lightProjection * in_lightTransform * in_worldTransform * vec4(in_pos, 1.0);
+    vec4 worldspace = in_worldTransform * vec4(in_pos, 1.0);
+    vec4 position = in_projectionTransform * in_cameraTransform * worldspace;
+    vec4 lightspace = in_lightProjection * in_lightTransform * worldspace;
     gl_Position = position;
-    
-    frag_tex = in_tex;
-    frag_lightspace = lightSpace;
-    }
+
+    fragin.tex = in_tex;
+    fragin.worldspace = worldspace;
+    fragin.lightspace = lightspace;
+    fragin.normal = in_norm;
+}

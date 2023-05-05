@@ -11,11 +11,12 @@ namespace dojo {
 
 class Light {
     public:
-        Light();
+        Light(glm::vec3 _color = glm::vec3(1));
         ~Light();
 
         void setPos(glm::vec3 _pos);
         glm::vec3 getPos();
+        glm::vec3 getColor();
         void setFOV(float _fov);
         void setTarget(glm::vec3 _target);
         Texture* getShadowMap();
@@ -31,6 +32,7 @@ class Light {
         glm::vec3 m_pos;
         glm::vec3 m_target;
         glm::vec3 m_up;
+        glm::vec3 m_color;
 
         void updateLightTransform();
 

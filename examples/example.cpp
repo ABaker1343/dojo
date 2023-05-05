@@ -73,9 +73,9 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
 
     float turnSpeed = 80;
     if (_window->KEYS[GLFW_KEY_J]) {
-        _camera->rotate(turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
-    } if (_window->KEYS[GLFW_KEY_K]) {
         _camera->rotate(-turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
+    } if (_window->KEYS[GLFW_KEY_K]) {
+        _camera->rotate(turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
     } if (_window->KEYS[GLFW_KEY_W]) {
         _camera->move(movementSpeed, dojo::Camera::FORWARD);
     } if (_window->KEYS[GLFW_KEY_S]) {
@@ -158,7 +158,7 @@ int main() {
     obj3d2->setPos(glm::vec3(-10, 0, 0));
 
     dojo::Light* light = new dojo::Light();
-    light->setPos(obj3d2->getPos());
+    light->setPos(obj3d2->getPos() + glm::vec3(-5, 3, 0));
     light->setTarget(glm::vec3(0));
     dojo::GameObject3D *lightfollow = new dojo::GameObject3D("PS1MemoryCard_OBJ/MemoryCard.obj");
     lightfollow->setScale(glm::vec3(0.2));
@@ -167,7 +167,7 @@ int main() {
     dojo::Texture* tex = new dojo::Texture(glm::ivec2(1800, 720));
     renderer->textToTexture(tex, "long string for a menu", glm::vec4(1));
     //dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(25), glm::vec2(2), tex);
-    dojo::MenuItem* shadowViewer = new dojo::MenuItem(glm::vec2(0.1, 0.1), glm::vec2(0.4, 0.4), light->getShadowMap());
+    dojo::MenuItem* shadowViewer = new dojo::MenuItem(glm::vec2(0.05, 0.85), glm::vec2(0.1, 0.1), light->getShadowMap());
     dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), "long string for a menu", renderer);
 
     std::cout << "created game object" << std::endl;

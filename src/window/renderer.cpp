@@ -150,6 +150,9 @@ void Renderer::drawLit(Camera* _camera, GameObject3D* _object, Light* _light) {
     setUniformMat4("in_lightTransform", _light->getLightTransform());
     setUniformMat4("in_lightProjection", _light->getProjectionTransform());
 
+    setUniformVec3("in_lightColor", _light->getColor());
+    setUniformVec3("in_lightPos", _light->getPos());
+
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
     setUniformInt("in_shadowMap", 1);
@@ -158,7 +161,7 @@ void Renderer::drawLit(Camera* _camera, GameObject3D* _object, Light* _light) {
     auto meshes = _object->getMeshes();
     for (unsigned int i = 0; i < meshes->size(); i++) {
         Material* material = meshes->at(i).getMaterial();
-        setUniformVec3("in_ambient", material->ka);
+        setUniformVec3("in_kAmbient", material->ka);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material->kd_map->getHandle());
 

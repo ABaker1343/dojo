@@ -3,15 +3,17 @@
 
 namespace dojo {
 
-    Light::Light() {
+    Light::Light(glm::vec3 _color) {
         m_lightTransform = glm::identity<glm::mat4>();
         m_fov = 20;
         m_target = glm::vec3(0);
         m_aspectRatio = 16.f/9.f;
         m_up = glm::vec3(0, 1, 0);
-        m_projectionTransform = glm::perspective(m_fov, m_aspectRatio, 0.5f, 50.f);
+        m_projectionTransform = glm::perspective(m_fov, m_aspectRatio, 0.1f, 50.f);
         updateLightTransform();
         m_shadowMap = new Texture(glm::ivec2(1280, 720), Texture::Use::DEPTH_MAP);
+        
+        m_color = _color;
     }
 
     Light::~Light() {
@@ -24,6 +26,9 @@ namespace dojo {
     }
     glm::vec3 Light::getPos() {
         return m_pos;
+    }
+    glm::vec3 Light::getColor() {
+        return m_color;
     }
     void Light::setFOV(float _fov) {
         m_fov = _fov;
