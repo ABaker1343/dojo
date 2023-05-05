@@ -188,7 +188,7 @@ namespace dojo {
             } else if (identifier == "Ns") {
                 float value;
                 stream >> value;
-                currentMat->ns = value;
+                currentMat->specExponent = value;
             } else if (identifier == "Ka") {
                 glm::vec3 value;
                 stream >> value.x >> value.y >> value.z;
@@ -197,6 +197,10 @@ namespace dojo {
                 glm::vec3 value;
                 stream >> value.x >> value.y >> value.z;
                 currentMat->ks = value;
+            } else if (identifier == "Kd") {
+                glm::vec3 value;
+                stream >> value.x >> value.y >> value.z;
+                currentMat->kd = value;
             } else if (identifier == "Ke") {
                 glm::vec3 value;
                 stream >> value.x >> value.y >> value.z;
@@ -204,11 +208,11 @@ namespace dojo {
             } else if (identifier == "Ni") {
                 float value;
                 stream >> value;
-                currentMat->ni = value;
+                currentMat->opticalDensity = value;
             } else if (identifier == "d") {
                 float value;
                 stream >> value;
-                currentMat->d = value;
+                currentMat->opacity = value;
             } else if (identifier == "illum") {
                 float value;
                 stream >> value;

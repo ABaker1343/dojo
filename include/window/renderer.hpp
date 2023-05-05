@@ -94,6 +94,7 @@ class Renderer {
         void setUniformVec3(const char* _name, glm::vec3 _value);
         void setUniformIVec2(const char* _name, glm::vec2 _value);
         void setUniformInt(const char* _name, int _value);
+        void setUniformFloat(const char* _name, float _value);
 
         void makeTextureRenderDependancies();
         void makeShadowDependencies();

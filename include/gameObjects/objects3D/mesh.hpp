@@ -12,13 +12,14 @@ namespace dojo {
 
     struct Material {
         Texture* kd_map;
-        float ns;
-        float ni;
-        float d;
-        float illum;
-        glm::vec3 ka;
-        glm::vec3 ks;
-        glm::vec3 ke;
+        float specExponent = 0.0f;
+        float opticalDensity = 1.0f;
+        float opacity = 1.0f;
+        float illum = 1.0f;
+        glm::vec3 ka = glm::vec3(1.0);
+        glm::vec3 kd = glm::vec3(1.0);
+        glm::vec3 ks = glm::vec3(1.0);
+        glm::vec3 ke = glm::vec3(1.0);
     };
 
     class Mesh : public Renderable {

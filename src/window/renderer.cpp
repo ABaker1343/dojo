@@ -152,6 +152,7 @@ void Renderer::drawLit(Camera* _camera, GameObject3D* _object, Light* _light) {
 
     setUniformVec3("in_lightColor", _light->getColor());
     setUniformVec3("in_lightPos", _light->getPos());
+    setUniformVec3("in_cameraPos", _camera->getPosition());
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
@@ -162,6 +163,10 @@ void Renderer::drawLit(Camera* _camera, GameObject3D* _object, Light* _light) {
     for (unsigned int i = 0; i < meshes->size(); i++) {
         Material* material = meshes->at(i).getMaterial();
         setUniformVec3("in_kAmbient", material->ka);
+        setUniformVec3("in_kDiffuse", material->kd);
+        setUniformVec3("in_kSpecular", material->ks);
+        setUniformFloat("in_specExponent", material->specExponent);
+        setUniformFloat("in_opacity", material->opacity);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material->kd_map->getHandle());
 
@@ -412,6 +417,11 @@ void Renderer::setUniformIVec2(const char* _name, glm::vec2 _value) {
 void Renderer::setUniformInt(const char* _name, int _value) {
     unsigned int loc = glGetUniformLocation(m_CurrentShader, _name);
     glUniform1i(loc, _value);
+}
+
+void Renderer::setUniformFloat(const char* _name, float _value) {
+    unsigned int loc = glGetUniformLocation(m_CurrentShader, _name);
+    glUniform1f(loc, _value);
 }
 
 void Renderer::setShader(const std::string& _shader) {

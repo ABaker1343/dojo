@@ -16,7 +16,14 @@ uniform sampler2D in_shadowMap;
 
 uniform vec3 in_lightPos;
 uniform vec3 in_lightColor;
+
 uniform vec3 in_kAmbient;
+uniform vec3 in_kDiffuse;
+uniform vec3 in_kSpecular;
+uniform float in_specExponent;
+uniform float in_opacity;
+
+uniform vec3 in_cameraPos;
 
 float shadowCalc(vec4 pointLightSpace, float lightAngle) {
     vec3 proj = pointLightSpace.xyz / pointLightSpace.w;
@@ -36,12 +43,16 @@ void main() {
     vec3 norm = normalize(fragin.normal);
     vec3 lightDir = normalize(in_lightPos - fragin.worldspace.xyz);
     float lightSimilarAngle = dot(norm, lightDir); // tells us how similar the lightDir and normal are
-    float diffuse = max(lightSimilarAngle, 0.0);
+    vec3 diffuse = max(lightSimilarAngle, 0.0) * in_kDiffuse;
+
+    vec3 viewDir = normalize(in_cameraPos - fragin.worldspace.xyz);
+    vec3 reflectDir = reflect(-lightDir, norm); // here lightDir is from the point to the light so we reverse it
+    vec3 specular = pow(max(dot(viewDir, reflectDir), 0.0), in_specExponent) * in_kSpecular;
+
     vec4 objectColor = texture(in_texture, fragin.tex);
 
     float shadow = shadowCalc(fragin.lightspace, 1.0 - lightSimilarAngle);
 
-    vec3 lighting = ambient + (diffuse * shadow);
-    objectColor.xyz = objectColor.xyz * lighting;
-    fragColor = vec4(objectColor);
+    vec3 lighting = ambient + ((diffuse + specular) * shadow);
+    fragColor = vec4(objectColor.xyz * lighting, in_opacity);
 }
