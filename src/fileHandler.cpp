@@ -83,9 +83,13 @@ namespace dojo {
                 int pointnum = 0;
                 unsigned int prev1vert, prev1tex, prev1norm;
                 unsigned int firstvert, firsttex, firstnorm;
+
                 while(stream.rdbuf()->in_avail()) {
                     std::string point;
                     stream >> point;
+                    if (point == "") {
+                        continue;
+                    }
 
                     std::replace(point.begin(), point.end(), '/', ' ');
                     std::stringstream pointstream(point);
@@ -116,6 +120,7 @@ namespace dojo {
                                 prev1vert = vert;
                                 prev1tex = tex;
                                 prev1norm = norm;
+                                break;
                         }
 
                     } else {
@@ -147,26 +152,25 @@ namespace dojo {
                         meshes[currentMesh].getVertices()->push_back(tempNorm[prev1norm * 3 + 1]);
                         meshes[currentMesh].getVertices()->push_back(tempNorm[prev1norm * 3 + 2]);
 
-
                         prev1vert = vert;
                         prev1tex = tex;
                         prev1norm = norm;
 
                     }
-
                     pointnum++;
                 }
 
             } else if (identifier == "mtllib") {
                 stream >> mtlfilepath;
+                std::cout << "loading materials: " << mtlfilepath << std::endl;
                 loadMaterials(dirpath, mtlfilepath, materialMap);
+                std::cout << "loaded materials" << std::endl;
             }
         }
 
         for (unsigned int i = 0; i < meshes.size(); i++){
             meshes[i].createBuffers();
         }
-        std::cout << "loaded meshes" << std::endl;
         return meshes;
     }
 

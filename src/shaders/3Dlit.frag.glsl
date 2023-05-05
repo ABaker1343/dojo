@@ -28,6 +28,12 @@ uniform vec3 in_cameraPos;
 float shadowCalc(vec4 pointLightSpace, float lightAngle) {
     vec3 proj = pointLightSpace.xyz / pointLightSpace.w;
     proj = proj * 0.5 + 0.5;
+
+    if (proj.x > 1.0) return 0.0;
+    if (proj.x < 0.0) return 0.0;
+    if (proj.y > 1.0) return 0.0;
+    if (proj.y < 0.0) return 0.0;
+
     float depthOnMap = texture(in_shadowMap, proj.xy).r;
 
     //float depthBias = 0.000;

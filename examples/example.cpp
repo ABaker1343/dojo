@@ -72,22 +72,24 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
     }
 
     float turnSpeed = 80;
-    if (_window->KEYS[GLFW_KEY_J]) {
-        _camera->rotate(-turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
-    } if (_window->KEYS[GLFW_KEY_K]) {
-        _camera->rotate(turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
-    } if (_window->KEYS[GLFW_KEY_W]) {
-        _camera->move(movementSpeed, dojo::Camera::FORWARD);
-    } if (_window->KEYS[GLFW_KEY_S]) {
-        _camera->move(-movementSpeed, dojo::Camera::FORWARD);
-    } if (_window->KEYS[GLFW_KEY_D]) {
-        _camera->move(movementSpeed, dojo::Camera::RIGHT);
-    } if (_window->KEYS[GLFW_KEY_A]) {
-        _camera->move(-movementSpeed, dojo::Camera::RIGHT);
-    } if (_window->KEYS[GLFW_KEY_SPACE]) {
-        _camera->move(movementSpeed, dojo::Camera::UP);
-    } if (_window->KEYS[GLFW_KEY_Z]) {
-        _camera->move(-movementSpeed, dojo::Camera::UP);
+    if (!(_window->KEYS[GLFW_KEY_L])) {
+        if (_window->KEYS[GLFW_KEY_J]) {
+            _camera->rotate(-turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
+        } if (_window->KEYS[GLFW_KEY_K]) {
+            _camera->rotate(turnSpeed * timePassed/1000.f, dojo::Camera::YAW);
+        } if (_window->KEYS[GLFW_KEY_W]) {
+            _camera->move(movementSpeed, dojo::Camera::FORWARD);
+        } if (_window->KEYS[GLFW_KEY_S]) {
+            _camera->move(-movementSpeed, dojo::Camera::FORWARD);
+        } if (_window->KEYS[GLFW_KEY_D]) {
+            _camera->move(movementSpeed, dojo::Camera::RIGHT);
+        } if (_window->KEYS[GLFW_KEY_A]) {
+            _camera->move(-movementSpeed, dojo::Camera::RIGHT);
+        } if (_window->KEYS[GLFW_KEY_SPACE]) {
+            _camera->move(movementSpeed, dojo::Camera::UP);
+        } if (_window->KEYS[GLFW_KEY_Z]) {
+            _camera->move(-movementSpeed, dojo::Camera::UP);
+        }
     }
 
     if (_window->KEYS[GLFW_KEY_O]) {
@@ -96,17 +98,25 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
         _camera->makePerspective();
     }
 
-    if (_window->KEYS[GLFW_KEY_M]) {
-        _light->setPos(_light->getPos() + glm::vec3(0, 0, -0.05));
-    }
-    if (_window->KEYS[GLFW_KEY_N]) {
-        _light->setPos(_light->getPos() + glm::vec3(0, 0, 0.05));
-    }
-    if (_window->KEYS[GLFW_KEY_V]) {
-        _light->setPos(_light->getPos() + glm::vec3(0, -0.05, 0));
-    }
-    if (_window->KEYS[GLFW_KEY_B]) {
-        _light->setPos(_light->getPos() + glm::vec3(0, 0.05, 0));
+    if (_window->KEYS[GLFW_KEY_L]) {
+        if (_window->KEYS[GLFW_KEY_W]) {
+            _light->setPos(_light->getPos() + glm::vec3(0, 0, -0.05));
+        }
+        if (_window->KEYS[GLFW_KEY_S]) {
+            _light->setPos(_light->getPos() + glm::vec3(0, 0, 0.05));
+        }
+        if (_window->KEYS[GLFW_KEY_Z]) {
+            _light->setPos(_light->getPos() + glm::vec3(0, -0.05, 0));
+        }
+        if (_window->KEYS[GLFW_KEY_SPACE]) {
+            _light->setPos(_light->getPos() + glm::vec3(0, 0.05, 0));
+        }
+        if (_window->KEYS[GLFW_KEY_A]) {
+            _light->setPos(_light->getPos() + glm::vec3(-0.05, 0, 0));
+        }
+        if (_window->KEYS[GLFW_KEY_D]) {
+            _light->setPos(_light->getPos() + glm::vec3(0.05, 0, 0));
+        }
     }
 
     lastUpdateTime = std::chrono::steady_clock::now();
@@ -153,6 +163,7 @@ int main() {
     dojo::BoxCollider *box2 = new dojo::BoxCollider(obj2->getPos(), obj2->getScale());
     std::cout << "creating 3d object" << std::endl;
     dojo::GameObject3D *obj3d = new dojo::GameObject3D("PS1MemoryCard_OBJ/MemoryCard.obj");
+    //dojo::GameObject3D *obj3d = new dojo::GameObject3D("../../assets/baricade/Concrete_Barricade.obj");
     dojo::GameObject3D *obj3d2 = new dojo::GameObject3D("../bench/Bench.obj");
     obj3d2->setScale(glm::vec3(0.2));
     obj3d2->setPos(glm::vec3(-10, 0, 0));
@@ -170,7 +181,7 @@ int main() {
     dojo::MenuItem* shadowViewer = new dojo::MenuItem(glm::vec2(0.05, 0.85), glm::vec2(0.1, 0.1), light->getShadowMap());
     dojo::MenuItem* menuItem = new dojo::MenuItem(glm::vec2(0.2, 0.9), glm::vec2(0.6, 0.1), "long string for a menu", renderer);
 
-    std::cout << "created game object" << std::endl;
+    std::cout << "created all game Objects" << std::endl;
 
     bool running = true;
 
