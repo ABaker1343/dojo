@@ -12,6 +12,7 @@
 
 #include "objectWrapper.hpp"
 #include "cameraWrapper.hpp"
+#include "objectCreator.hpp"
 
 class Placement {
 
@@ -26,6 +27,7 @@ class Placement {
 
         std::unique_ptr<CameraWrapper> m_cameraWrap;
         std::unique_ptr<dojo::MenuItem> m_createButton;
+        std::unique_ptr<ObjectCreator> m_creator;
 
         std::vector<ObjectWrapper*> m_objects;
         size_t m_selectedIndex;
@@ -33,11 +35,15 @@ class Placement {
         float m_menuStackHeight;
         glm::vec4 m_selectedColor;
         glm::vec4 m_defaultColor;
+
+        std::chrono::time_point<std::chrono::steady_clock> m_lastUpdateTime;
+        std::chrono::milliseconds m_msSinceUpdate;
     
+
         void update();
         void render();
 
-        ObjectWrapper* createObject();
+        void createObject();
 
         unsigned int bindKeyCallback();
         unsigned int bindButtonCallback();

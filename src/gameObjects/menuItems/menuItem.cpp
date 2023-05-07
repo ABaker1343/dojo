@@ -41,7 +41,6 @@ bool MenuItem::isMouseOver(glm::vec2 _windowSize, glm::vec2 _mousePos) {
     // function expects bottom left so we flip the mouse position
     _mousePos.y = _windowSize.y - _mousePos.y;
     glm::vec2 relativePos = _mousePos / _windowSize;
-    std::cout << "relative pos: " << relativePos.x << ", " << relativePos.y << std::endl;
     if (relativePos.x > m_pos.x && relativePos.x < m_pos.x + m_scale.x &&
             relativePos.y > m_pos.y && relativePos.y < m_pos.y + m_scale.y) {
         return true;

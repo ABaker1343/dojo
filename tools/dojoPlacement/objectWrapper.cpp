@@ -24,6 +24,7 @@ ObjectWrapper::ObjectWrapper(const std::string& _texturePath, glm::vec2 _menuPos
 }
 
 ObjectWrapper::ObjectWrapper(dojo::GameObject* _object, Type _type, glm::vec2 _menuPos, dojo::Renderer* _renderer) {
+    std::cout << "inside constructor" << std::endl;
     m_object = _object;
     m_type = _type;
     m_path = "placeholder";

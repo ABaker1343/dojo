@@ -29,6 +29,8 @@ Placement::Placement(int argc, const char* argv[]) {
     m_defaultColor = glm::vec4(1);
     m_selectedColor = glm::vec4(1, 0.5, 0.5, 1.0);
 
+    m_creator = std::make_unique<ObjectCreator>(m_renderer.get());
+
 }
 
 Placement::~Placement() {
@@ -57,10 +59,9 @@ void Placement::run() {
 }
 
 void Placement::update() {
-    static auto lastUpdateTime = std::chrono::steady_clock::now();
-    auto msSinceUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - lastUpdateTime).count();
+    m_msSinceUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - m_lastUpdateTime);
 
-    float movementSpeed = msSinceUpdate * 0.005;
+    float movementSpeed = m_msSinceUpdate.count() * 0.005;
 
     if (m_window->KEYS[GLFW_KEY_UP]) {
         m_selectedObject->setPos(m_selectedObject->getPos() + glm::vec3(0, movementSpeed, 0));
@@ -87,7 +88,7 @@ void Placement::update() {
         m_cameraWrap->move(movementSpeed, dojo::Camera::RIGHT, m_renderer.get());
     }
 
-    lastUpdateTime = std::chrono::steady_clock::now();
+    m_lastUpdateTime = std::chrono::steady_clock::now();
 
 
 }
@@ -115,13 +116,16 @@ void Placement::render() {
     m_renderer->draw(m_createButton.get());
 }
 
-ObjectWrapper* Placement::createObject() {
-    dojo::GameObject3D* newObject;
-    newObject = new dojo::GameObject3D("memCard/MemoryCard.obj");
-    ObjectWrapper* wrapper = new ObjectWrapper(newObject, ObjectWrapper::OBJECT_3D, glm::vec2(0.75, 1 - m_menuStackHeight), m_renderer.get());
-    m_menuStackHeight += 0.05;
-
-    return wrapper;
+void Placement::createObject() {
+    std::pair<dojo::GameObject*, ObjectWrapper::Type> objData;
+    objData = m_creator->createObject();
+    std::cout << m_menuStackHeight << std::endl;
+    std::cout << "assined" << std::endl;
+    ObjectWrapper* wrappedObject = new ObjectWrapper(std::get<0>(objData), std::get<1>(objData),
+            glm::vec2(0.75, 1 - m_menuStackHeight), m_renderer.get());
+    std::cout << "wrapped object" << std::endl;
+    m_objects.push_back(wrappedObject);
+    std::cout << "pushed" << std::endl;
 }
 
 unsigned int Placement::bindKeyCallback() {
@@ -153,10 +157,8 @@ unsigned int Placement::bindButtonCallback() {
         glm::vec2 windowSize = m_window->getDimensions();
         switch(_action) {
             case GLFW_PRESS:
-                std::cout << "mouse click" << std::endl;
                 if (m_createButton->isMouseOver(windowSize, mousePos)) {
-                    std::cout << "button pressed" << std::endl;
-                    m_objects.push_back(createObject());
+                    createObject();
                 }
                 break;
         }
