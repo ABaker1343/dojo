@@ -55,6 +55,14 @@ void Renderer::clearShadow(Light* _light) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void Renderer::clear(DirectionalLightComponent* _light) {
+    glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFramebuffer);
+    glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _light->getShadowMap()->getHandle(), 0);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Renderer::draw(Camera* _camera, Renderable* _object) {
 
     if (m_useDefaultShaders) setShader("default");
@@ -68,6 +76,108 @@ void Renderer::draw(Camera* _camera, Renderable* _object) {
     glBindVertexArray(_object->getVertexArray());
 
     glDrawArrays(GL_TRIANGLES, 0, _object->getVertexBufferSize() / 3);
+}
+
+void Renderer::draw(Camera* _camera, StaticSpriteComponent* _sprite, TransformComponent* _transform) {
+    if (m_useDefaultShaders) setShader("2DStatic");
+
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _sprite->m_texture->getHandle());
+    setUniformInt("in_texture", 0);
+
+    setUniformMat4("in_worldTransform", _transform->m_worldTransform);
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+    setUniformIVec2("in_flip", _sprite->flip);
+    
+    glBindVertexArray(_sprite->m_renderInfo.vertexArray);
+
+    glDrawArrays(GL_TRIANGLES, 0, _sprite->m_renderInfo.numVertices);
+}
+
+void Renderer::draw(Camera* _camera, StaticMeshComponent* _mesh, TransformComponent* _transform) {
+    if (m_useDefaultShaders) setShader("default3D");
+
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+
+    setUniformMat4("in_worldTransform", _transform->m_worldTransform);
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+    setUniformInt("in_texture", 0);
+
+    auto meshes = _mesh->m_meshes;
+    for (unsigned int i = 0; i < meshes.size(); i++) {
+        Material* material = meshes[i].getMaterial();
+        setUniformVec3("in_ambient", material->ka);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material->kd_map->getHandle());
+        glBindVertexArray(meshes[i].getVertexArray());
+        glDrawArrays(GL_TRIANGLES, 0, meshes[i].getVertexBufferSize() / 8);
+    }
+    
+}
+
+void Renderer::draw(DirectionalLightComponent* _light, ViewerTransformComponent* _lightTransform, StaticMeshComponent* _mesh, TransformComponent* _meshTransform) {
+    glm::vec2 shadowMapSize = _light->getShadowMap()->getSize();
+    glViewport(0, 0, shadowMapSize.x, shadowMapSize.y);
+
+    setShader("shadowMap");
+
+    setUniformMat4("in_worldTransform", _meshTransform->m_worldTransform);
+    setUniformMat4("in_lightTransform", _lightTransform->getViewTransform());
+    setUniformMat4("in_projectionTransform", _lightTransform->getProjectionTransform());
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFramebuffer);
+    glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _light->getShadowMap()->getHandle(), 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    auto meshes = _mesh->m_meshes;
+    for (unsigned int i = 0; i < meshes.size(); i++) {
+        glBindVertexArray(meshes[i].getVertexArray());
+        glDrawArrays(GL_TRIANGLES, 0, meshes[i].getVertexBufferSize() / 8);
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::draw(Camera* _camera, DirectionalLightComponent* _light, ViewerTransformComponent* _lightTransform, StaticMeshComponent* _mesh, TransformComponent* _meshTransform) {
+    if (m_useDefaultShaders) setShader("3Dlit");
+
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+
+    setUniformMat4("in_worldTransform", _meshTransform->m_worldTransform);
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+
+    setUniformMat4("in_lightTransform", _lightTransform->getViewTransform());
+    setUniformMat4("in_lightProjection", _lightTransform->getProjectionTransform());
+
+    setUniformVec3("in_lightColor", _light->getColor());
+    setUniformVec3("in_lightPos", _lightTransform->getPos());
+    setUniformVec3("in_cameraPos", _camera->getPosition());
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _light->getShadowMap()->getHandle());
+    setUniformInt("in_shadowMap", 1);
+    setUniformInt("in_texture", 0);
+
+    auto meshes = _mesh->m_meshes;
+    for (unsigned int i = 0; i < meshes.size(); i++) {
+        Material* material = meshes[i].getMaterial();
+        setUniformVec3("in_kAmbient", material->ka);
+        setUniformVec3("in_kDiffuse", material->kd);
+        setUniformVec3("in_kSpecular", material->ks);
+        setUniformFloat("in_specExponent", material->specExponent);
+        setUniformFloat("in_opacity", material->opacity);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material->kd_map->getHandle());
+
+        glBindVertexArray(meshes[i].getVertexArray());
+        glDrawArrays(GL_TRIANGLES, 0, meshes[i].getVertexBufferSize() / 8);
+    }
 }
 
 void Renderer::draw(Camera* _camera, GameObject* _object) {

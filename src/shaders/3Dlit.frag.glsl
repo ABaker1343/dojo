@@ -37,7 +37,8 @@ float shadowCalc(vec4 pointLightSpace, float lightAngle) {
     float depthOnMap = texture(in_shadowMap, proj.xy).r;
 
     //float depthBias = 0.000;
-    float depthBias = max(0.005 * lightAngle, 0);
+
+    float depthBias = max(0.001 * lightAngle, 0);
 
     return proj.z > depthOnMap + depthBias ? 0.0 : 1.0;
 }

@@ -23,6 +23,12 @@
 #include "../gameObjects/objects3D/gameObject3D.hpp"
 #include "../gameObjects/lights/light.hpp"
 
+#include "../ecs/staticSpriteComponent.hpp"
+#include "../ecs/staticMeshComponent.hpp"
+#include "../ecs/transformComponent.hpp"
+#include "../ecs/directionalLightComponent.hpp"
+#include "../ecs/viewerTransformComponent.hpp"
+
 namespace dojo{
 
 typedef struct {
@@ -36,6 +42,13 @@ class Renderer {
     public:
         Renderer(Window* _window, glm::vec2 _VPPos = glm::vec2(0,0), glm::vec2 _VPSize = glm::vec2(1,1));
         ~Renderer();
+
+        void draw(Camera* _camera, StaticSpriteComponent* _sprite, TransformComponent* _transform);
+        void draw(Camera* _camera, StaticMeshComponent* _mesh, TransformComponent* _transform);
+
+        void draw(DirectionalLightComponent* _light, ViewerTransformComponent* _lightView, StaticMeshComponent* _mesh, TransformComponent* _meshTransform);
+
+        void draw(Camera* _camera, DirectionalLightComponent* _light, ViewerTransformComponent* _lightView, StaticMeshComponent* _mesh, TransformComponent* _meshTransform);
 
         void draw(Camera* _camera, Renderable* _object);
         void draw(Camera* _camera, GameObject* _object);
@@ -55,6 +68,7 @@ class Renderer {
 
         void clear();
         void clearShadow(Light* _light);
+        void clear(DirectionalLightComponent* _light);
         void setShader(const std::string& _shader);
         void setShaderPath(const std::string& _shaderPath);
         void loadShaders();

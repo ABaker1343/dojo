@@ -2,6 +2,7 @@
 
 layout(location=0) in vec3 in_position;
 layout(location=1) in vec2 in_texCoords;
+layout(location=2) in vec3 in_normal;
 
 uniform mat4 in_worldTransform;
 uniform mat4 in_cameraTransform;
