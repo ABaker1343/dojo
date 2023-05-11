@@ -1,10 +1,11 @@
-#ifndef __HEADER_GAME_OBJECT_2D_ANIMATED
-#define __HEADER_GAME_OBJECT_2D_ANIMATED
+#ifndef __HEADER_ANIMATED_SPRITE_COMPONENT
+#define __HEADER_ANIMATED_SPRITE_COMPONENT
 
 #include <map>
 
-#include "gameObject2D.hpp"
-#include "../texture.hpp"
+#include "../gameObjects/texture.hpp"
+#include "../window/renderInfo.hpp"
+#include "component.hpp"
 
 namespace dojo {
 
@@ -15,19 +16,21 @@ typedef struct {
     int currentFrame;
     int repeatFrames;
     int textureRows;
-} AnimationState;
+} Animation;
 
-class GameObject2DAnimated : public GameObject2D {
+class AnimatedSpriteComponent : public Component {
     public:
-        GameObject2DAnimated(const std::string& _texturePath, int _textureRows, int _numFrames, const std::string& _name = "default");
-        ~GameObject2DAnimated();
-        std::unique_ptr<GameObject> clone();
+        AnimatedSpriteComponent(const std::string& _texturePath, int _textureRows, int _numFrames, const std::string& _name = "default");
+        ~AnimatedSpriteComponent();
 
         void addAnimation(const std::string& _name, const std::string& _animationPath, int _textureRows, int _numFrames);
         bool setAnimation(const std::string& _name);
 
         bool nextFrame();
         void resetAnimation();
+        glm::vec2 getFlip();
+        void flipx();
+        void flipy();
 
         int getNumFrames();
         int getCurrentFrameNum();
@@ -35,11 +38,13 @@ class GameObject2DAnimated : public GameObject2D {
         std::string currentAnimation();
 
         Texture* getTexture();
+        RenderInfo m_renderInfo;
 
     protected:
-        std::map<std::string, AnimationState> m_Animations;
-        AnimationState* m_CurrentAnimation;
+        std::map<std::string, Animation> m_Animations;
+        Animation* m_CurrentAnimation;
         float m_TimeSinceLastAnimation;
+        glm::ivec2 m_flip;
 };
 
 }

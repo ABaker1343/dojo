@@ -12,9 +12,9 @@ class Component {
     public:
 
         enum ComponentBits {
-            StaticSpriteBit = 1,
+            SpriteBit = 1,
             TransformBit = 1 << 1,
-            StaticMeshBit = 1 << 2,
+            MeshBit = 1 << 2,
             LightBit = 1 << 3
         };
 

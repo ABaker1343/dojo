@@ -3,13 +3,13 @@
 namespace dojo {
 
     GameObject2DAnimated::GameObject2DAnimated(const std::string& _animationPath, int _textureRows, int _numFrames, const std::string& _name) : GameObject2D() {
-        m_Animations = std::map<std::string, Animation>();
+        m_Animations = std::map<std::string, AnimationState>();
         addAnimation(_name, _animationPath, _textureRows, _numFrames);
         setAnimation(_name);
     }
 
     GameObject2DAnimated::~GameObject2DAnimated() {
-        std::map<std::string, Animation>::iterator it;
+        std::map<std::string, AnimationState>::iterator it;
         for (it = m_Animations.begin(); it != m_Animations.end(); it++){
             delete (it->second.texture);
         }
@@ -20,7 +20,7 @@ namespace dojo {
     }
 
     void GameObject2DAnimated::addAnimation(const std::string& _name, const std::string& _animationPath, int _textureRows, int _numFrames) {
-        Animation newAnimation = Animation();
+        AnimationState newAnimation = AnimationState();
 
         newAnimation.name = _name;
         newAnimation.texture = new Texture(_animationPath);

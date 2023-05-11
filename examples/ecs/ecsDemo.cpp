@@ -13,17 +13,19 @@ int main() {
     camera->setPos(glm::vec3(0, 5, 10));
 
     dojo::Entity* entity2d = new dojo::Entity();
-    dojo::StaticSpriteComponent* sprite = new dojo::StaticSpriteComponent("../stick_man.png");
+    //dojo::StaticSpriteComponent* sprite = new dojo::StaticSpriteComponent("../stick_man.png");
     dojo::TransformComponent* transform = new dojo::TransformComponent();
-    entity2d->addComponent(sprite, dojo::Component::StaticSpriteBit);
-    entity2d->addComponent(transform, dojo::Component::TransformBit);
+    //entity2d->addComponent(sprite, dojo::Component::StaticSpriteBit);
+    //entity2d->addComponent(transform, dojo::Component::TransformBit);
+    dojo::AnimatedSpriteComponent* animatedSprite = new dojo::AnimatedSpriteComponent("../Enchantress/Walk.png", 1, 8, "Walk");
+    entity2d->addComponent(animatedSprite, dojo::Component::SpriteBit);
 
     dojo::Entity* entity3d = new dojo::Entity();
     dojo::StaticMeshComponent* mesh = new dojo::StaticMeshComponent("../../bench/Bench.obj");
     dojo::TransformComponent* transform3d = new dojo::TransformComponent();
     transform3d->setPos(glm::vec3(-10, 0, 0))
             ->setScale(glm::vec3(1));
-    entity3d->addComponent(mesh, dojo::Component::StaticMeshBit);
+    entity3d->addComponent(mesh, dojo::Component::MeshBit);
     entity3d->addComponent(transform3d, dojo::Component::TransformBit);
 
     dojo::Entity* entityLight = new dojo::Entity();
@@ -34,9 +36,9 @@ int main() {
     dojo::StaticMeshComponent* lightmesh = new dojo::StaticMeshComponent("../PS1MemoryCard_OBJ/MemoryCard.obj");
     entityLight->addComponent(emmitLight, dojo::Component::LightBit);
     entityLight->addComponent(lightTransform, dojo::Component::TransformBit);
-    entityLight->addComponent(lightmesh, dojo::Component::StaticMeshBit);
+    entityLight->addComponent(lightmesh, dojo::Component::MeshBit);
 
-    assert(entity2d->hasComponents(dojo::Component::TransformBit | dojo::Component::StaticSpriteBit));
+    assert(entity2d->hasComponents(dojo::Component::TransformBit | dojo::Component::SpriteBit));
 
     while(!window->shouldClose()) {
         window->pollEvents();
@@ -53,7 +55,10 @@ int main() {
         renderer->draw(camera, lightmesh, lightTransform);
 
         // these components are not drawn with shadow maps
-        renderer->draw(camera, sprite, transform);
+        renderer->draw(camera, animatedSprite, transform);
+        if (!animatedSprite->nextFrame()) {
+            animatedSprite->resetAnimation();
+        }
 
         window->flipBuffers();
     }

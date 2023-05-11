@@ -24,6 +24,7 @@
 #include "../gameObjects/lights/light.hpp"
 
 #include "../ecs/staticSpriteComponent.hpp"
+#include "../ecs/animatedSpriteComponent.hpp"
 #include "../ecs/staticMeshComponent.hpp"
 #include "../ecs/transformComponent.hpp"
 #include "../ecs/directionalLightComponent.hpp"
@@ -44,6 +45,7 @@ class Renderer {
         ~Renderer();
 
         void draw(Camera* _camera, StaticSpriteComponent* _sprite, TransformComponent* _transform);
+        void draw(Camera* _camera, AnimatedSpriteComponent* _sprite, TransformComponent* _transform);
         void draw(Camera* _camera, StaticMeshComponent* _mesh, TransformComponent* _transform);
 
         void draw(DirectionalLightComponent* _light, ViewerTransformComponent* _lightView, StaticMeshComponent* _mesh, TransformComponent* _meshTransform);

@@ -109,6 +109,28 @@ void Renderer::draw(Camera* _camera, StaticSpriteComponent* _sprite, TransformCo
     glDrawArrays(GL_TRIANGLES, 0, _sprite->m_renderInfo.numVertices);
 }
 
+void Renderer::draw(Camera* _camera, AnimatedSpriteComponent* _sprite, TransformComponent* _transform) {
+    if (m_useDefaultShaders) setShader("2DAnimated");
+
+    glViewport(m_VPAbsPos.x, m_VPAbsPos.y, m_VPAbsScale.x, m_VPAbsScale.y);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _sprite->getTexture()->getHandle());
+    setUniformInt("in_texture", 0);
+
+    setUniformMat4("in_worldTransform", _transform->m_worldTransform);
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
+    setUniformIVec2("in_flip", _sprite->getFlip());
+
+    setUniformInt("in_animationData.numFrames", _sprite->getNumFrames());
+    setUniformInt("in_animationData.currentFrame", _sprite->getCurrentFrameNum());
+    setUniformInt("in_animationData.rows", _sprite->getCurrentAnimationRows());
+
+    glBindVertexArray(_sprite->m_renderInfo.vertexArray);
+
+    glDrawArrays(GL_TRIANGLES, 0, _sprite->m_renderInfo.numVertices);
+}
+
 void Renderer::draw(Camera* _camera, StaticMeshComponent* _mesh, TransformComponent* _transform) {
     if (m_useDefaultShaders) setShader("default3D");
 
