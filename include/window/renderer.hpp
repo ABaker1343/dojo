@@ -114,8 +114,6 @@ class Renderer {
         void makeShadowDependencies();
         void initFreetype();
 
-        
-
 };
 
 }

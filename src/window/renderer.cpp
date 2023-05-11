@@ -19,6 +19,7 @@ Renderer::Renderer(Window* _window, glm::vec2 _VPPos, glm::vec2 _VPSize) {
     glBlendEquation(GL_FUNC_ADD);
 
     setShaderPath("shaders/");
+    m_Shaders = std::map<std::string, unsigned int>();
     m_useDefaultShaders = true;
     resize();
     _window->bindRenderer(this);
@@ -33,10 +34,22 @@ Renderer::Renderer(Window* _window, glm::vec2 _VPPos, glm::vec2 _VPSize) {
 
 Renderer::~Renderer() {
     // remove all the programs
-    std::map<std::string, unsigned int>::iterator it;
-    for (it = m_Shaders.begin(); it != m_Shaders.end(); it++){
-        glDeleteProgram(it->second);
+    std::map<std::string, unsigned int>::iterator shaderit;
+    size_t size = m_Shaders.size();
+    unsigned int i = 0;
+    for (shaderit = m_Shaders.begin(); shaderit != m_Shaders.end(); shaderit++){
+        std::cout << "deleting shader " << ++i << " of " << size << ": " << shaderit->first << std::endl;
+        glDeleteProgram(shaderit->second);
+        std::cout << "done" << std::endl;
     }
+    std::cout << "all shaders have been deleted" << std::endl;
+    
+    //delete freetype
+    for (auto fontit = m_fontMapTerm.begin(); fontit != m_fontMapTerm.end(); fontit++) {
+        glDeleteTextures(1, &fontit->second.textureHandle);
+    }
+    std::cout << "fonts deleted" << std::endl;
+    
 }
 
 Window* Renderer::getWindow() {

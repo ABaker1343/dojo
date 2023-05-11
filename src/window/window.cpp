@@ -3,21 +3,21 @@
 
 namespace dojo {
 
-bool Window::KEYS[GLFW_KEY_LAST + 1];
-bool Window::MOUSE_BUTTONS[GLFW_MOUSE_BUTTON_LAST + 1];
-glm::vec2 Window::m_MousePos = glm::vec2();
+//bool Window::KEYS[GLFW_KEY_LAST + 1];
+//bool Window::MOUSE_BUTTONS[GLFW_MOUSE_BUTTON_LAST + 1];
+//glm::vec2 Window::m_mousePos = glm::vec2();
 
-std::vector<KeyCallback> Window::m_keyCallbacks = std::vector<KeyCallback>();
-std::vector<MouseCallback> Window::m_mouseCallbacks = std::vector<MouseCallback>();
-std::vector<CursorPosCallback> Window::m_cursorPosCallbacks = std::vector<CursorPosCallback>();
-std::vector<ResizeCallback> Window::m_resizeCallbacks = std::vector<ResizeCallback>();
+//std::vector<KeyCallback> Window::m_keyCallbacks = std::vector<KeyCallback>();
+//std::vector<MouseCallback> Window::m_mouseCallbacks = std::vector<MouseCallback>();
+//std::vector<CursorPosCallback> Window::m_cursorPosCallbacks = std::vector<CursorPosCallback>();
+//std::vector<ResizeCallback> Window::m_resizeCallbacks = std::vector<ResizeCallback>();
 
-bool Window::m_usingDefaultKeyCallback = true;
-bool Window::m_usingDefaultMouseCallback = true;
-bool Window::m_usingDefaultCursorCallback = true;
-bool Window::m_usingDefaultResizeCallback = true;
+//bool Window::m_usingDefaultKeyCallback = true;
+//bool Window::m_usingDefaultMouseCallback = true;
+//bool Window::m_usingDefaultCursorCallback = true;
+//bool Window::m_usingDefaultResizeCallback = true;
 
-std::vector<Renderer*> Window::m_ActiveRenderers = std::vector<Renderer*>();
+//std::vector<Renderer*> Window::m_ActiveRenderers = std::vector<Renderer*>();
 
 Window::Window(int _width, int _height, const std::string& _title){
 
@@ -34,6 +34,10 @@ Window::Window(int _width, int _height, const std::string& _title){
     // set window callback
     setWindowCallbacks();
 
+    m_mousePos = glm::ivec3(0);
+
+    m_activeRenderers = std::vector<Renderer*>();
+
 }
 
 void Window::initWindow(int _width, int _height, const std::string& _title) {
@@ -46,30 +50,43 @@ void Window::initWindow(int _width, int _height, const std::string& _title) {
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     // create a glfw window
-    m_Window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
+    m_window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
 
-    if (m_Window == NULL){
+    if (m_window == NULL){
         glfwTerminate();
         throw std::runtime_error("failed to create glfw window");
     }
-    glfwMakeContextCurrent(m_Window);
+    glfwMakeContextCurrent(m_window);
+    glfwSetWindowUserPointer(m_window, this);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         throw std::runtime_error("failed to initialize glad");
     }
 
     if (glfwRawMouseMotionSupported()) {
-        glfwSetInputMode(m_Window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     }
+
 
 }
 
 void Window::setWindowCallbacks() {
-    glfwSetKeyCallback(m_Window, windowKeyCallback);
-    glfwSetWindowSizeCallback(m_Window, windowResizeCallback);
-    glfwSetMouseButtonCallback(m_Window, windowMouseCallback);
-    glfwSetCursorPosCallback(m_Window, windowCursorPosCallback);
-    glfwSetFramebufferSizeCallback(m_Window, windowResizeCallback);
+    glfwSetKeyCallback(m_window, windowKeyCallback);
+    glfwSetWindowSizeCallback(m_window, windowResizeCallback);
+    glfwSetMouseButtonCallback(m_window, windowMouseCallback);
+    glfwSetCursorPosCallback(m_window, windowCursorPosCallback);
+    glfwSetFramebufferSizeCallback(m_window, windowResizeCallback);
+
+    m_usingDefaultKeyCallback = true;
+    m_usingDefaultMouseCallback = true;
+    m_usingDefaultCursorCallback = true;
+    m_usingDefaultResizeCallback = true;
+
+    m_keyCallbacks = std::vector<KeyCallback>();
+    m_mouseCallbacks = std::vector<MouseCallback>();
+    m_cursorPosCallbacks = std::vector<CursorPosCallback>();
+    m_resizeCallbacks = std::vector<ResizeCallback>();
+
 }
 
 unsigned int Window::setCustomKeyCallback(KeyCallbackFunction _callback) {
@@ -161,64 +178,68 @@ void Window::useDefaultResizeCallback(bool _use) {
 }
 
 void Window::windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods) {
+    Window* windowptr = (Window*)glfwGetWindowUserPointer(_window);
     // when a key is pressed add it to the array
     
-    if (m_usingDefaultKeyCallback) {
+    if (windowptr->m_usingDefaultKeyCallback) {
         switch (_action) {
             case GLFW_PRESS:
-                KEYS[_key] = true;
+                windowptr->KEYS[_key] = true;
                 break;
             case GLFW_RELEASE:
-                KEYS[_key] = false;
+                windowptr->KEYS[_key] = false;
                 break;
         }
     }
     
 
-    for (unsigned int i = 0; i < m_keyCallbacks.size(); i++){
-        m_keyCallbacks[i].function(_key, _scancode, _action, _mods);
+    for (unsigned int i = 0; i < windowptr->m_keyCallbacks.size(); i++){
+        windowptr->m_keyCallbacks[i].function(_key, _scancode, _action, _mods);
     }
 }
 
 void Window::windowMouseCallback(GLFWwindow *_window, int _button, int _action, int _mods) {
-    if (m_usingDefaultMouseCallback) {
+    Window* windowptr = (Window*)glfwGetWindowUserPointer(_window);
+    if (windowptr->m_usingDefaultMouseCallback) {
         switch (_action) {
             case GLFW_PRESS:
-                MOUSE_BUTTONS[_button] = true;
+                windowptr->MOUSE_BUTTONS[_button] = true;
                 break;
             case GLFW_RELEASE:
-                MOUSE_BUTTONS[_button] = false;
+                windowptr->MOUSE_BUTTONS[_button] = false;
         }
     }
 
-    for (unsigned int i = 0; i < m_mouseCallbacks.size(); i++) {
-        m_mouseCallbacks[i].function(_button, _action, _mods);
+    for (unsigned int i = 0; i < windowptr->m_mouseCallbacks.size(); i++) {
+        windowptr->m_mouseCallbacks[i].function(_button, _action, _mods);
     }
 }
 
 void Window::windowCursorPosCallback(GLFWwindow *_window, double _xpos, double _ypos) {
-    if (m_usingDefaultCursorCallback) {
-        m_MousePos.x = _xpos;
-        m_MousePos.y = _ypos;
+    Window* windowptr = (Window*)glfwGetWindowUserPointer(_window);
+    if (windowptr->m_usingDefaultCursorCallback) {
+        windowptr->m_mousePos.x = _xpos;
+        windowptr->m_mousePos.y = _ypos;
     }
 
-    for (unsigned int i = 0; i < m_cursorPosCallbacks.size(); i++) {
-        m_cursorPosCallbacks[i].function(_xpos, _ypos);
+    for (unsigned int i = 0; i < windowptr->m_cursorPosCallbacks.size(); i++) {
+        windowptr->m_cursorPosCallbacks[i].function(_xpos, _ypos);
     }
 }
 
 void Window::windowResizeCallback(GLFWwindow* _window, int _width, int _height) {
-    if (m_usingDefaultResizeCallback) {
+    Window* windowptr = (Window*)glfwGetWindowUserPointer(_window);
+    if (windowptr->m_usingDefaultResizeCallback) {
 
     }
 
-    for (unsigned int i = 0; i < m_resizeCallbacks.size(); i++) {
-        m_resizeCallbacks[i].function(_width, _height);
+    for (unsigned int i = 0; i < windowptr->m_resizeCallbacks.size(); i++) {
+        windowptr->m_resizeCallbacks[i].function(_width, _height);
     }
 }
 
 void Window::flipBuffers() {
-    glfwSwapBuffers(m_Window);
+    glfwSwapBuffers(m_window);
 }
 
 void Window::pollEvents() {
@@ -226,25 +247,27 @@ void Window::pollEvents() {
 }
 
 glm::vec2 Window::getMousePos() {
-    return m_MousePos;
+    return m_mousePos;
 }
 
 glm::vec2 Window::getDimensions() {
     int width, height;
-    glfwGetWindowSize(m_Window, &width, &height);
+    glfwGetWindowSize(m_window, &width, &height);
     return glm::vec2(width, height);
 }
 
 void Window::bindRenderer(Renderer* _renderer) {
-    m_ActiveRenderers.push_back(_renderer);
+    m_activeRenderers.push_back(_renderer);
 }
 
 bool Window::shouldClose() {
-    return glfwWindowShouldClose(m_Window);
+    return glfwWindowShouldClose(m_window);
 }
 
 Window::~Window() {
-    glfwDestroyWindow(m_Window);
+    std::cout << "destroying window" << std::endl;
+    glfwDestroyWindow(m_window);
+    std::cout << "terminating glfw" << std::endl;
     glfwTerminate();
 }
 

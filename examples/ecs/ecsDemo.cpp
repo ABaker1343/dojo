@@ -58,11 +58,18 @@ int main() {
         window->flipBuffers();
     }
 
+    std::cout << "deleting entity2d" << std::endl;
     delete entity2d;
+    std::cout << "deleting entity3d" << std::endl;
     delete entity3d;
+    std::cout << "deleting camera" << std::endl;
     delete camera;
+    std::cout << "deleting renderer" << std::endl;
     delete renderer;
+    std::cout << "renderer deleted" << std::endl;
+    std::cout << "deleting window" << std::endl;
     delete window;
+    std::cout << "window deleted" << std::endl;
 
 
     return 0;

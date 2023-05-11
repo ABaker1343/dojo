@@ -69,32 +69,34 @@ class Window {
         unsigned int setCustomResizeCallback(ResizeCallbackFunction _callback);
         void removeResizeCallback(unsigned int _callbackID);
 
-        static bool KEYS[GLFW_KEY_LAST + 1];
-        static bool MOUSE_BUTTONS[GLFW_MOUSE_BUTTON_LAST + 1];
+        bool KEYS[GLFW_KEY_LAST + 1];
+        bool MOUSE_BUTTONS[GLFW_MOUSE_BUTTON_LAST + 1];
 
-        static void bindRenderer(Renderer* _renderer);
+        void bindRenderer(Renderer* _renderer);
 
     private:
-        GLFWwindow* m_Window;
-        static std::vector<Renderer*> m_ActiveRenderers;
+        GLFWwindow* m_window;
+        std::vector<Renderer*> m_activeRenderers;
         
-        static glm::vec2 m_MousePos;
+        glm::vec2 m_mousePos;
 
-        static bool m_usingDefaultKeyCallback;
-        static bool m_usingDefaultMouseCallback;
-        static bool m_usingDefaultCursorCallback;
-        static bool m_usingDefaultResizeCallback;
+        bool m_usingDefaultKeyCallback;
+        bool m_usingDefaultMouseCallback;
+        bool m_usingDefaultCursorCallback;
+        bool m_usingDefaultResizeCallback;
 
-        static unsigned int genNewCallbackID();
+        void bindDefaultKeyCallback();
+
+        unsigned int genNewCallbackID();
         static void windowKeyCallback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods);
         static void windowResizeCallback(GLFWwindow* _window, int _width, int _height);
         static void windowMouseCallback(GLFWwindow* _window, int _button, int _action, int _mods);
         static void windowCursorPosCallback(GLFWwindow *_window, double _xpos, double _ypos);
-        static KeyCallback m_defaultKeyCallback;
-        static std::vector<KeyCallback> m_keyCallbacks;
-        static std::vector<MouseCallback> m_mouseCallbacks;
-        static std::vector<CursorPosCallback> m_cursorPosCallbacks;
-        static std::vector<ResizeCallback> m_resizeCallbacks;
+        static KeyCallbackFunction m_defaultKeyCallback;
+        std::vector<KeyCallback> m_keyCallbacks;
+        std::vector<MouseCallback> m_mouseCallbacks;
+        std::vector<CursorPosCallback> m_cursorPosCallbacks;
+        std::vector<ResizeCallback> m_resizeCallbacks;
 
         void initWindow(int _width, int _height, const std::string& _title);
         void setWindowCallbacks();
