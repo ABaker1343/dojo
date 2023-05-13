@@ -1,7 +1,9 @@
 #include "../../include/dojo.hpp"
 
-void updateCamera(dojo::Window* _window, dojo::Camera* _camera);
-void updateLight(dojo::Window* _window, dojo::Entity* _light);
+#include <chrono>
+
+void updateCamera(dojo::Window* _window, dojo::Camera* _camera, unsigned int _timestep);
+void updateLight(dojo::Window* _window, dojo::Entity* _light, unsigned int _timestep);
 
 int main() {
     
@@ -24,7 +26,7 @@ int main() {
     dojo::StaticMeshComponent* mesh = new dojo::StaticMeshComponent("../../bench/Bench.obj");
     dojo::TransformComponent* transform3d = new dojo::TransformComponent();
     transform3d->setPos(glm::vec3(-10, 0, 0))
-            ->setScale(glm::vec3(1));
+            ->setScale(glm::vec3(0.2));
     entity3d->addComponent(mesh, dojo::Component::MeshBit);
     entity3d->addComponent(transform3d, dojo::Component::TransformBit);
 
@@ -40,10 +42,14 @@ int main() {
 
     assert(entity2d->hasComponents(dojo::Component::TransformBit | dojo::Component::SpriteBit));
 
+    std::chrono::steady_clock::time_point lastUpdate = std::chrono::steady_clock::now();
+
     while(!window->shouldClose()) {
         window->pollEvents();
-        updateCamera(window, camera);
-        updateLight(window, entityLight);
+        unsigned int timestep = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - lastUpdate).count();
+        updateCamera(window, camera, timestep);
+        updateLight(window, entityLight, timestep);
+        lastUpdate = std::chrono::steady_clock::now();
         renderer->clear(emmitLight);
         renderer->clear();
 
@@ -80,52 +86,56 @@ int main() {
     return 0;
 }
 
-void updateCamera(dojo::Window* _window, dojo::Camera* _camera) {
+void updateCamera(dojo::Window* _window, dojo::Camera* _camera, unsigned int _timestep) {
     if (_window->KEYS[GLFW_KEY_L]) {
         return;
     }
 
+    float movementSpeed = float(_timestep)/1000.f * 2.f;
+
     if (_window->KEYS[GLFW_KEY_S]) {
-        _camera->move(-1, dojo::Camera::FORWARD);
+        _camera->move(-movementSpeed, dojo::Camera::FORWARD);
     } else if (_window->KEYS[GLFW_KEY_W]) {
-        _camera->move(1, dojo::Camera::FORWARD);
+        _camera->move(movementSpeed, dojo::Camera::FORWARD);
     }
 
     if (_window->KEYS[GLFW_KEY_D]) {
-        _camera->move(1, dojo::Camera::RIGHT);
+        _camera->move(movementSpeed, dojo::Camera::RIGHT);
     } else if (_window->KEYS[GLFW_KEY_A]) {
-        _camera->move(-1, dojo::Camera::RIGHT);
+        _camera->move(-movementSpeed, dojo::Camera::RIGHT);
     }
 
     if (_window->KEYS[GLFW_KEY_SPACE]) {
-        _camera->move(1, dojo::Camera::UP);
+        _camera->move(movementSpeed, dojo::Camera::UP);
     } else if (_window->KEYS[GLFW_KEY_Z]) {
-        _camera->move(-1, dojo::Camera::UP);
+        _camera->move(-movementSpeed, dojo::Camera::UP);
     }
 }
 
-void updateLight(dojo::Window* _window, dojo::Entity* _light) {
+void updateLight(dojo::Window* _window, dojo::Entity* _light, unsigned int _timestep) {
     if (!_window->KEYS[GLFW_KEY_L]) {
         return;
     }
 
+    float movementSpeed = float(_timestep)/1000.f * 2;
+
     dojo::TransformComponent* transform = (dojo::TransformComponent*)(_light->getComponent(dojo::Component::TransformBit));
 
     if (_window->KEYS[GLFW_KEY_W]) {
-        transform->setPos(transform->getPos() + glm::vec3(0, 0, -1));
+        transform->setPos(transform->getPos() + glm::vec3(0, 0, -movementSpeed));
     } else if (_window->KEYS[GLFW_KEY_S]) {
-        transform->setPos(transform->getPos() + glm::vec3(0, 0, 1));
+        transform->setPos(transform->getPos() + glm::vec3(0, 0, movementSpeed));
     }
 
     if (_window->KEYS[GLFW_KEY_A]) {
-        transform->setPos(transform->getPos() + glm::vec3(-1, 0, 0));
+        transform->setPos(transform->getPos() + glm::vec3(-movementSpeed, 0, 0));
     } else if (_window->KEYS[GLFW_KEY_D]) {
-        transform->setPos(transform->getPos() + glm::vec3(1, 0, 0));
+        transform->setPos(transform->getPos() + glm::vec3(movementSpeed, 0, 0));
     }
 
     if (_window->KEYS[GLFW_KEY_SPACE]) {
-        transform->setPos(transform->getPos() + glm::vec3(0, 1, 0));
+        transform->setPos(transform->getPos() + glm::vec3(0, movementSpeed, 0));
     } else if (_window->KEYS[GLFW_KEY_Z]) {
-        transform->setPos(transform->getPos() + glm::vec3(0, -1, 0));
+        transform->setPos(transform->getPos() + glm::vec3(0, -movementSpeed, 0));
     }
 }

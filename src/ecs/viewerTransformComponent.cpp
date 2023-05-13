@@ -8,7 +8,7 @@ namespace dojo {
         m_target = _target;
         m_aspectRatio = 16.f/9.f;
         m_up = glm::vec3(0, 1, 0);
-        m_projectionTransform = glm::perspective(m_fov, m_aspectRatio, 0.15f, 60.f);
+        m_projectionTransform = glm::perspective(m_fov, m_aspectRatio, 0.5f, 50.f);
         updateViewTransform();
 
     }

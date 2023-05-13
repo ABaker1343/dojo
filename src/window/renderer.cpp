@@ -100,7 +100,7 @@ void Renderer::draw(Camera* _camera, StaticSpriteComponent* _sprite, TransformCo
     setUniformInt("in_texture", 0);
 
     setUniformMat4("in_worldTransform", _transform->m_worldTransform);
-    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());
+    setUniformMat4("in_cameraTransform", _camera->getCameraTransform());renderer.cpp
     setUniformMat4("in_projectionTransform", _camera->getProjectionTransform());
     setUniformIVec2("in_flip", _sprite->flip);
     
