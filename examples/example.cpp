@@ -123,11 +123,13 @@ void HandleInputs(dojo::Window* _window, dojo::GameObject2DAnimated* _object, do
 }
 
 int main() {
+    std::cout << "creating new window" << std::endl;
     std::string title = "new window";
     dojo::Window *w = new dojo::Window(1280, 720, title);
 
     w->useDefaultKeyCallback(true);
 
+    std::cout << "creating renderer" << std::endl;
     dojo::Renderer *renderer = new dojo::Renderer(w);
     renderer->setShaderPath("../src/shaders/");
     renderer->loadShaders();
@@ -136,6 +138,7 @@ int main() {
             renderer->resize();
             });
 
+    std::cout << "creating camera" << std::endl;
     dojo::Camera* cam = new dojo::Camera();
     //cam->setPos(glm::vec3(0.f, 0.f, 15.f));
     //cam->lookAt(glm::vec3(0.f));

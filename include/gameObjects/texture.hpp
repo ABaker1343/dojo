@@ -2,7 +2,7 @@
 #define __HEADER_TEXTURE
 
 #include <string>
-#include "glad/glad.h"
+#include "../glad/glad.h"
 #include <stdexcept>
 #include <glm/glm.hpp>
 

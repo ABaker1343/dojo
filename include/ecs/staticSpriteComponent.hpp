@@ -1,7 +1,7 @@
 #ifndef __HEADER_SPRITE_COMPONENT
 #define __HEADER_SPRITE_COMPONENT
 
-#include <glad/glad.h>
+#include "../glad/glad.h"
 #include <glm/glm.hpp>
 #include <vector>
 

@@ -1,7 +1,7 @@
 #ifndef __HEADER_RENDER_INFO
 #define __HEADER_RENDER_INFO
 
-#include <glad/glad.h>
+#include "../glad/glad.h"
 #include <vector>
 
 namespace dojo {
